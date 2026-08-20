@@ -1,38 +1,87 @@
-.App {
-  text-align: center;
+.app-shell {
+  min-height: 100vh;
+  background: #ffffff;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.home-page {
   min-height: 100vh;
   display: flex;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.9fr;
+  gap: 32px;
+}
+
+.brand-logo {
+  width: auto;
+  height: 100vh;
+  object-fit: contain;
+}
+
+.content-panel {
+  display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
 }
 
-.App-link {
-  color: #61dafb;
+.content-panel h1 {
+  margin: 0 0 28px;
+  font-size: clamp(2.6rem, 4vw, 5rem);
+  line-height: 1.06;
+  color: #ff7328;
+  font-weight: 800;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.cedula-form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 10px;
+  max-width: 500px;
+  width: 300px;
+}
+
+.cedula-form label {
+  font-size: 0.95rem;
+  color: #362676;
+  font-weight: 600;
+}
+
+.cedula-form input {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.052);
+  color: #000000;
+  padding: 0 16px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.cedula-form input::placeholder {
+  color: rgba(62, 65, 69, 0.8);
+}
+
+@media (max-width: 768px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
   }
-  to {
-    transform: rotate(360deg);
+
+  .logo-panel {
+    order: 1;
+  }
+
+  .content-panel {
+    order: 2;
+    align-items: center;
+  }
+
+  .cedula-form {
+    width: 100%;
   }
 }
