@@ -1,5 +1,7 @@
+// src/App.js
 import { useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { consultarCupo } from './api/postCupo';
 import './App.css';
 
 function HomePage() {
@@ -10,37 +12,21 @@ function HomePage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const valor = cedula.trim();
-
-    if (!valor) {
-      setError('Debe ingresar una cédula.');
+    
+    if (!cedula.trim()) {
+      setError('Por favor ingrese un número de cédula');
       setRespuesta(null);
       return;
     }
 
     setLoading(true);
     setError('');
+    setRespuesta(null);
 
     try {
-      const response = await fetch(
-        'https://sitecdesarrollo-n8n.9hwbyc.easypanel.host/webhook/empleados/cupo',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ cedula: valor }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data?.message || 'No se pudo consultar la información.');
-      }
-
+      const data = await consultarCupo(cedula);
       setRespuesta(data);
+      console.log('Respuesta:', data);
     } catch (err) {
       setError(err.message || 'Ocurrió un error al consultar la cédula.');
       setRespuesta(null);
@@ -72,6 +58,10 @@ function HomePage() {
               value={cedula}
               onChange={(event) => setCedula(event.target.value)}
               placeholder="Digite su número de cédula"
+              maxLength={10}
+              pattern="[0-9]*"
+              inputMode="numeric"
+              required
             />
 
             <button type="submit" className="consultar-btn" disabled={loading}>
