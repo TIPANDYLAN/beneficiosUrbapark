@@ -9,6 +9,6 @@ test('renders the benefits title and cedula form', () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText(/beneficios urbapark/i)).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /beneficios urbapark/i })).toBeInTheDocument();
   expect(screen.getByLabelText(/cedula/i)).toBeInTheDocument();
 });
