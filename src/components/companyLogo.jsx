@@ -1,54 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-const CompanyLogo = ({ nomEmpresa }) => {
-  const [logoUrl, setLogoUrl] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const baseName = nomEmpresa.toLowerCase().trim().replace(/\s+/g, '');
-    
-    // Lista de URLs candidatas a probar simultáneamente
-    const candidates = [
-      `https://logos.hunter.io/${baseName}.com`,
-      `https://logos.hunter.io/${baseName}.com.ec`,
-      `https://logos.hunter.io/${baseName}.ec`
-    ];
-
-    // Función que intenta cargar una imagen individualmente
-    const loadImage = (url) =>
-      new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () => resolve(url);
-        img.onerror = () => reject(url);
-      });
-
-    // Dispara todas las peticiones en paralelo
-    Promise.any(candidates.map(loadImage))
-      .then((firstValidUrl) => {
-        setLogoUrl(firstValidUrl);
-      })
-      .catch(() => {
-        // Si absolutamente todas fallan, asigna un placeholder
-        setLogoUrl('https://via.placeholder.com/50?text=Logo');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [nomEmpresa]);
+const CompanyLogo = ({ dominioLogo, nomEmpresa }) => {
+  // Si en la BD la empresa no tiene dominio asignado todavía
+  if (!dominioLogo) {
+    const iniciales = nomEmpresa.substring(0, 2).toUpperCase();
+    return <div className="company-avatar">{iniciales}</div>;
+  }
 
   return (
-    <div className="logo-container">
-      {loading ? (
-        <div className="logo-skeleton" />
-      ) : (
-        <img
-          src={logoUrl}
-          alt={`Logo ${nomEmpresa}`}
-          className="company-logo"
-        />
-      )}
-    </div>
+    <img
+      src={`https://logos.hunter.io/${dominioLogo}`}
+      alt={`Logo ${nomEmpresa}`}
+      className="company-logo"
+      onError={(e) => {
+        // Fallback rápido si el dominio guardado en BD no devuelve imagen en Hunter
+        e.target.style.display = 'none';
+      }}
+    />
   );
 };
 

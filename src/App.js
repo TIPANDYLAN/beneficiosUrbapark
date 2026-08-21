@@ -81,8 +81,10 @@ function HomePage() {
                   </div>
                   {respuesta.map((item, i) => (
                     <div className="company-block" key={`${item.codEmpresa}-${i}`}>
-                      <CompanyLogo nomEmpresa={item.nomEmpresa} />
-
+                      <CompanyLogo 
+                        dominioLogo={item.logoEmpresa} 
+                        nomEmpresa={item.nomEmpresa} 
+                      />
                       <div className="company-info">
                         <h4 className="company-name">{item.nomEmpresa}</h4>
                         <p className="company-cupo">
