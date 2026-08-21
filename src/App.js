@@ -66,6 +66,7 @@ function HomePage() {
               pattern="[0-9]*"
               inputMode="numeric"
               required
+              autoComplete='off'
             />
 
             <button type="submit" className="consultar-btn" disabled={loading}>
