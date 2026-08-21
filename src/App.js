@@ -43,6 +43,9 @@ function HomePage() {
           <img src="/logo192.png" alt="UrbaPark logo" className="brand-logo" />
         </div>
 
+          <div className="mobile-header">
+            <img src="/logo342.png" alt="Header" className="mobile-header-img" />
+          </div>
         <div className="content-panel">
           <h1>
             <span style={{ color: '#ff7328' }}>Beneficios</span>{' '}
