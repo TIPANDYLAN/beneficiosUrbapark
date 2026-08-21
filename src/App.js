@@ -92,9 +92,11 @@ function HomePage() {
                       <div className="company-info">
                         <h4 className="company-name">{item.nomEmpresa}</h4>
                         <p className="company-cupo">
-                          {item.cupo && Number(item.cupo) > 0
-                            ? "Cupo: "+item.cupo
-                            : 'No tiene cupo disponible'}
+                          {String(item.codEmpresa) === '000004'
+                            ? 'Afiliado / Cuenta con el servicio'
+                            : item.cupo && Number(item.cupo) > 0
+                              ? "Cupo: " + item.cupo
+                              : 'No tiene cupo disponible'}
                         </p>
                       </div>
                     </div>
