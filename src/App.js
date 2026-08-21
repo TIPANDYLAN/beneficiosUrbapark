@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { consultarCupo } from './api/postCupo';
+import CompanyLogo from './components/companyLogo.jsx'
 import './App.css';
 
 function HomePage() {
@@ -73,8 +74,32 @@ function HomePage() {
 
           {respuesta && (
             <div className="api-response">
-              <h3>Respuesta</h3>
-              <pre>{JSON.stringify(respuesta, null, 2)}</pre>
+              {Array.isArray(respuesta) && respuesta.length > 0 ? (
+                <div className="results">
+                  <div className="welcome">
+                    ¡Bienvenido/a {respuesta[0].nombres} {respuesta[0].apellidos}!
+                  </div>
+                  {respuesta.map((item, i) => (
+                    <div className="company-block" key={`${item.codEmpresa}-${i}`}>
+                      <CompanyLogo nomEmpresa={item.nomEmpresa} />
+
+                      <div className="company-info">
+                        <h4 className="company-name">{item.nomEmpresa}</h4>
+                        <p className="company-cupo">
+                          {item.cupo && Number(item.cupo) > 0
+                            ? "Cupo: "+item.cupo
+                            : 'No tiene cupo disponible'}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="results">
+                  <div className="welcome">Bienvenido</div>
+                  <pre>{JSON.stringify(respuesta, null, 2)}</pre>
+                </div>
+              )}
             </div>
           )}
         </div>
