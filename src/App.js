@@ -93,23 +93,34 @@ function HomePage() {
                   ¡Bienvenido/a {respuesta[0].nombres} {respuesta[0].apellidos}!
                 </div>
                 {respuesta.map((item, i) => (
-                  <div className="company-block" key={`${item.codEmpresa}-${i}`}>
-                    <CompanyLogo 
-                      dominioLogo={item.logoEmpresa} 
-                      nomEmpresa={item.nomEmpresa} 
-                    />
-                    <div className="company-info">
-                      <h4 className="company-name">{item.nomEmpresa}</h4>
-                      <p className="company-cupo">
-                        {String(item.codEmpresa) === '000004'
-                          ? 'Afiliado / Cuenta con el servicio'
-                          : item.cupo && Number(item.cupo) > 0
-                            ? "Cupo: " + item.cupo
-                            : 'No tiene cupo disponible'}
-                      </p>
-                    </div>
+                <div className="company-block" key={`${item.codEmpresa}-${i}`}>
+                  <CompanyLogo 
+                    dominioLogo={item.logoEmpresa} 
+                    nomEmpresa={item.nomEmpresa} 
+                  />
+                  <div className="company-info">
+                    <h4 className="company-name">{item.nomEmpresa}</h4>
+                    <p className="company-cupo">
+                      {String(item.codEmpresa) === '000004'
+                        ? 'Afiliado / Cuenta con el servicio'
+                        : item.cupo && Number(item.cupo) > 0
+                          ? "Cupo: " + item.cupo
+                          : 'No tiene cupo disponible'}
+                    </p>
                   </div>
-                ))}
+                </div>
+              ))}
+
+              {/* Tarjeta de Próximamente */}
+              <div className="company-block coming-soon-block">
+                <div className="coming-soon-logo">
+                  ?
+                </div>
+                <div className="company-info">
+                  <h4 className="company-name">Próximamente</h4>
+                  <p className="company-cupo">Nuevos beneficios están en camino</p>
+                </div>
+              </div>
               </div>
             </div>
           )}
