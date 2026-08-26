@@ -103,9 +103,11 @@ function HomePage() {
                     <p className="company-cupo">
                       {String(item.codEmpresa) === '000004'
                         ? 'Afiliado / Cuenta con el servicio'
-                        : item.cupo && Number(item.cupo) > 0
-                          ? "Cupo: " + item.cupo
-                          : 'No tiene cupo disponible'}
+                        : String(item.codEmpresa) === '000002'
+                          ? 'Solicita tu adelanto de sueldo en Talento Humano'
+                          : item.cupo && Number(item.cupo) > 0
+                            ? `Cupo: ${item.cupo}`
+                            : 'No tiene cupo disponible'}
                     </p>
                   </div>
                 </div>
