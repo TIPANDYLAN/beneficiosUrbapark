@@ -104,7 +104,7 @@ function HomePage() {
                       {String(item.codEmpresa) === '000004'
                         ? 'Afiliado / Cuenta con el servicio'
                         : String(item.codEmpresa) === '000002'
-                          ? 'Solicita tu adelanto de sueldo en Talento Humano'
+                          ? 'Solicita información en Talento Humano'
                           : item.cupo && Number(item.cupo) > 0
                             ? `Cupo: ${item.cupo}`
                             : 'No tiene cupo disponible'}
