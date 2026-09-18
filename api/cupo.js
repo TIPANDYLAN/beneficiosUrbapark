@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       'http://sitecdesarrollo.172.10.219.15.sslip.io/webhook/empleados/cupo',
     ];
 
-const apiKey = process.env.N8N_API_KEY || 'u37khX9gYj2Ns5rPAWq4EtZcLVtMoF16';
+const apiKey = process.env.N8N_API_KEY;
 
     for (const url of urls) {
       try {
