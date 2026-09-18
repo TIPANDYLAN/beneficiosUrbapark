@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@react-pdf/renderer": "^4.9.0",
+    "docxtemplater": "^3.70.1",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.2",
+    "pizzip": "^3.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0",
