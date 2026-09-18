@@ -1,4 +1,15 @@
 // src/api/getEmpleados.js
+
+// Mappeador: Define la equivalencia entre la API externa y tu modelo interno
+function mapEmpleado(raw) {
+  return {
+    cedula: raw.DOCI_MFEMP || raw.documento || raw.identificacion || '',
+    nombre: raw.NOMBRES || raw.nombres || raw.full_name || 'Sin nombre',
+    apellido: raw.APELLIDOS || raw.apellidos || '',
+    cargo: raw.CAR_DESCRIPCION || raw.puesto || raw.position || 'Sin cargo',
+  };
+}
+
 export async function obtenerEmpleados() {
   const response = await fetch('/api/empleados', {
     method: 'GET',
@@ -19,5 +30,9 @@ export async function obtenerEmpleados() {
     );
   }
 
-  return data;
+  // Normalización de la estructura de lista
+  const listaRaw = Array.isArray(data) ? data : data?.empleados || data?.data || [];
+
+  // Retorna únicamente objetos con la estructura estandarizada
+  return listaRaw.map(mapEmpleado);
 }

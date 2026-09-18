@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { consultarCupo } from './api/postCupo';
 import CompanyLogo from './components/companyLogo.jsx';
 import './App.css';
+import Contratacion from './pages/contratacion.jsx';
 
 function HomePage() {
   const [cedula, setCedula] = useState('');
@@ -138,6 +139,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/contratacion" element={ <Contratacion/>} />
       </Routes>
     </div>
   );
