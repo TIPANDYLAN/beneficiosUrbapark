@@ -1,6 +1,7 @@
 // src/pages/Contratacion.jsx
 import React, { useState, Suspense } from 'react';
 import { useLoaderData, Await } from 'react-router-dom';
+import './contratacion.css'
 
 export default function Contratacion() {
   const { empleadosData } = useLoaderData();
@@ -9,11 +10,14 @@ export default function Contratacion() {
   return (
     <div className="pagina-contratacion">
       <header className="header-seccion">
-        <h1>Módulo de Contratación</h1>
-        <p>Seleccione un colaborador para continuar con el proceso.</p>
+        <h1>
+          <span>Módulo</span> {" "}
+          <span>de Contratación</span>
+        </h1>
       </header>
+      <label>Seleccione un colaborador para continuar con el proceso.</label>
 
-      <main className="form-container">
+      <form className="form-container">
         <Suspense
           fallback={
             <div className="campo-grupo">
@@ -54,7 +58,7 @@ export default function Contratacion() {
             }}
           </Await>
         </Suspense>
-      </main>
+      </form>
     </div>
   );
 }

@@ -27,24 +27,6 @@
   object-fit: contain;
 }
 
-/* Header Móvil */
-.mobile-header {
-  display: none;
-  width: 100%;
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-.mobile-header-img {
-  width: 100%;
-  max-width: 280px;
-  height: auto;
-  min-height: 50px;
-  display: block;
-  margin: 0 auto;
-  object-fit: contain;
-}
-
 /* Panel de contenido derecho */
 .content-panel {
   display: flex;
@@ -54,7 +36,7 @@
   padding-top: 16px;
 }
 
-.content-panel h1 {
+h1 {
   font-size: clamp(2.6rem, 4vw, 5rem);
   line-height: 1.06;
   padding-bottom: 30px;
@@ -66,8 +48,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
-  max-width: 500px;
   width: 300px;
 }
 
@@ -174,25 +154,9 @@
     display: none !important;
   }
 
-  .mobile-header {
-    display: flex !important;
-  }
-
-  .mobile-header-img {
-    width: 100%;
-    max-width: 100%;
-  }
-
   .content-panel {
     width: 80%;
     padding: 10px 10px 0 10px;
-  }
-
-  .content-panel h1 {
-    font-size: clamp(1.8rem, 5vw, 2.5rem);
-    padding-right: 0;
-    text-align: center;
-    width: 100%;
   }
 
   .cedula-form {

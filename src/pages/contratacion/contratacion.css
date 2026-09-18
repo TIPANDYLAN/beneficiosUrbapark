@@ -1,0 +1,16 @@
+.pagina-contratacion{
+    width: 100%;
+    padding-right: 10%;
+}
+
+.header-seccion {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#empleado-input{
+    max-width: 600px;
+    width: 100%;
+}

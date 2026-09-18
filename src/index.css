@@ -60,6 +60,11 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
 }
 
+h1 {
+  display: flex;
+  flex-direction: column;
+}
+
 h1 span:first-of-type {
   color: var(--color-primary);
 }
@@ -76,6 +81,7 @@ label {
   font-size: 0.95rem;
   color: var(--color-secondary);
   font-weight: 600;
+  padding-top: 10px;
 }
 
 input[type="text"],
@@ -87,6 +93,7 @@ textarea {
   width: 100%;
   min-height: 50px;
   padding: 0 16px;
+  margin: 10px 0;
   font-family: var(--font-main);
   font-size: 1rem;
   color: var(--color-text-main);
@@ -202,4 +209,93 @@ button:disabled,
 @keyframes pulse {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+/* ==========================================================================
+   6. LAYOUT REUTILIZABLES (Imagen a la izquierda y header responsive para móviles)
+   ========================================================================== */
+
+/* Layout general de dos columnas con Banner */
+.page-with-banner {
+  display: grid;
+  grid-template-columns: 0.8fr 2.2fr;
+  gap: 32px;
+  min-height: 100vh;
+  align-items: start;
+}
+
+/* Columna izquierda fija (Sticky) */
+.page-banner-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: start;
+  align-items: flex-start;
+}
+
+.page-banner-sidebar img {
+  width: auto;
+  height: 100vh;
+  object-fit: contain;
+}
+
+/* Columna derecha de contenido */
+.page-banner-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 16px;
+  width: 100%;
+}
+
+.mobile-header {
+  display: none;
+  width: 100%;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.mobile-header-img {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  min-height: 50px;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+/* Adaptación responsive automática */
+@media (max-width: 768px) {
+  h1 {
+    padding-right: 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .page-with-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .page-banner-sidebar {
+    display: none; /* Oculta la columna izquierda en móviles */
+  }
+
+  .page-banner-content {
+    width: 85%;
+    margin: 0 auto;
+    padding: 16px 0;
+  }
+    .mobile-header {
+    display: flex !important;
+  }
+
+  .mobile-header-img {
+    width: 100%;
+    max-width: 100%;
+  }
 }

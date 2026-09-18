@@ -1,24 +1,16 @@
 // src/App.js
 import React from 'react';
-import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom';
-import { obtenerEmpleados } from './api/getEmpleados';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import BannerLayout from './layouts/bannerLayout.jsx';
 import HomePage from './pages/homePage/homePage.jsx';
 import Contratacion from './pages/contratacion/contratacion.jsx';
-import './index.css';
-
-// Layout principal para mantener la envoltura visual global
-function Layout() {
-  return (
-    <div className="app-shell">
-      <Outlet />
-    </div>
-  );
-}
+import { obtenerEmpleados } from './api/getEmpleados.js';
+import './index.css'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <BannerLayout />, // 👈 Todas las rutas hijas tendrán el banner izquierdo
     children: [
       {
         index: true,
@@ -33,11 +25,15 @@ const router = createBrowserRouter([
           };
         },
       },
-      {
-        path: '*',
-        element: <Navigate to="/" replace />,
-      },
     ],
+  },
+  {
+    path: '/otra-pagina',
+    element: <div>Página sin banner lateral</div>,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
   },
 ]);
 
