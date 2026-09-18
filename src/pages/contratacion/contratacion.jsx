@@ -58,6 +58,13 @@ export default function Contratacion() {
             }}
           </Await>
         </Suspense>
+        <button 
+          type="submit" 
+          className="btn" 
+          disabled={!empleadoSeleccionado.trim()}
+        >
+          Generar documentación
+        </button>
       </form>
     </div>
   );
