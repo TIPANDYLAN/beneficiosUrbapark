@@ -1,62 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { obtenerEmpleados } from '../api/getEmpleados';
+// src/pages/Contratacion.jsx
+import React, { useState, Suspense } from 'react';
+import { useLoaderData, Await } from 'react-router-dom';
 
 export default function Contratacion() {
-  const [empleados, setEmpleados] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { empleadosData } = useLoaderData();
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState('');
 
-  useEffect(() => {
-    const cargarEmpleados = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await obtenerEmpleados();
-        const lista = Array.isArray(data) ? data : data?.empleados || data?.data || [];
-        setEmpleados(lista);
-      } catch (err) {
-        console.error('Error al cargar empleados:', err);
-        setError(err.message || 'Ocurrió un error al obtener la lista de empleados.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    cargarEmpleados();
-  }, []);
-
   return (
-    <div>
-      {/* Indicador de carga */}
-      {loading && <p>Cargando empleados...</p>}
+    <div className="pagina-contratacion">
+      <header className="header-seccion">
+        <h2>Módulo de Contratación</h2>
+        <p>Seleccione un colaborador para continuar con el proceso.</p>
+      </header>
 
-      {/* Mensaje de error */}
-      {error && <p>❌ {error}</p>}
+      <main className="form-container">
+        <Suspense
+          fallback={
+            <div className="campo-grupo">
+              <label htmlFor="empleado-input-disabled">Empleado: </label>
+              <input
+                id="empleado-input-disabled"
+                type="text"
+                placeholder="Escriba para buscar un empleado..."
+                disabled
+              />
+            </div>
+          }
+        >
+          <Await
+            resolve={empleadosData}
+            errorElement={<p className="error-text">❌ Error al cargar los empleados.</p>}
+          >
+            {(empleados) => {
+              const lista = Array.isArray(empleados) ? empleados : empleados?.empleados || [];
 
-      {/* Campo editable con lista de opciones (Select con buscador) */}
-      {!loading && !error && (
-        <div>
-          <label htmlFor="empleado-input">Empleado: </label>
-          <input
-            id="empleado-input"
-            type="text"
-            list="empleados-list"
-            value={empleadoSeleccionado}
-            onChange={(e) => setEmpleadoSeleccionado(e.target.value)}
-            placeholder="Escriba para buscar un empleado..."
-          />
-          <datalist id="empleados-list">
-            {empleados.map((emp, index) => {
-              const nombreCompleto = `${emp.nombre || ''} ${emp.apellido || ''}`.trim() || 'Sin nombre';
               return (
-                <option key={emp.id || index} value={nombreCompleto} />
+                <div className="campo-grupo">
+                  <label htmlFor="empleado-input">Empleado: </label>
+                  <input
+                    id="empleado-input"
+                    type="text"
+                    list="empleados-list"
+                    value={empleadoSeleccionado}
+                    onChange={(e) => setEmpleadoSeleccionado(e.target.value)}
+                    placeholder="Escriba para buscar un empleado..."
+                  />
+                  <datalist id="empleados-list">
+                    {lista.map((emp, index) => {
+                      const nombreCompleto = `${emp.nombre || ''} ${emp.apellido || ''}`.trim() || 'Sin nombre';
+                      return <option key={emp.id || index} value={nombreCompleto} />;
+                    })}
+                  </datalist>
+                </div>
               );
-            })}
-          </datalist>
-        </div>
-      )}
+            }}
+          </Await>
+        </Suspense>
+      </main>
     </div>
   );
 }

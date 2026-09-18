@@ -1,10 +1,11 @@
 // src/App.js
 import { useState } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { consultarCupo } from './api/postCupo';
+import { obtenerEmpleados } from './api/getEmpleados';
 import CompanyLogo from './components/companyLogo.jsx';
-import './App.css';
 import Contratacion from './pages/contratacion.jsx';
+import './App.css';
 
 function HomePage() {
   const [cedula, setCedula] = useState('');
@@ -14,7 +15,6 @@ function HomePage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (!cedula.trim()) {
       setError('Por favor ingrese un número de cédula');
       setRespuesta(null);
@@ -27,14 +27,11 @@ function HomePage() {
 
     try {
       const data = await consultarCupo(cedula);
-
-      // Verificación: Si no devuelve datos o el arreglo está vacío
       if (!data || (Array.isArray(data) && data.length === 0)) {
         setError('No es posible encontrar la persona solicitada');
         setRespuesta(null);
       } else {
         setRespuesta(data);
-        console.log('Respuesta:', data);
       }
     } catch (err) {
       setError(err.message || 'No es posible encontrar la persona solicitada');
@@ -50,11 +47,9 @@ function HomePage() {
         <div className="logo-panel">
           <img src="/logo192.png" alt="UrbaPark logo" className="brand-logo" />
         </div>
-
         <div className="mobile-header">
           <img src="/logo342.png" alt="Header" className="mobile-header-img" />
         </div>
-
         <div className="content-panel">
           <h1>
             <span style={{ color: '#ff7328' }}>Beneficios</span>{' '}
@@ -77,16 +72,13 @@ function HomePage() {
               required
               autoComplete="off"
             />
-
             <button type="submit" className="consultar-btn" disabled={loading}>
               {loading ? 'Consultando...' : 'Consultar'}
             </button>
           </form>
 
-          {/* Mensaje de error formateado */}
           {error && <div className="api-message error">{error}</div>}
 
-          {/* Resultados de la consulta */}
           {respuesta && Array.isArray(respuesta) && respuesta.length > 0 && (
             <div className="api-response">
               <div className="results">
@@ -94,36 +86,25 @@ function HomePage() {
                   ¡Bienvenido/a {respuesta[0].nombres} {respuesta[0].apellidos}!
                 </div>
                 {respuesta.map((item, i) => (
-                <div className="company-block" key={`${item.codEmpresa}-${i}`}>
-                  <CompanyLogo 
-                    dominioLogo={item.logoEmpresa} 
-                    nomEmpresa={item.nomEmpresa} 
-                  />
-                  <div className="company-info">
-                    <h4 className="company-name">{item.nomEmpresa}</h4>
-                    <p className="company-cupo">
-                      {String(item.codEmpresa) === '000004'
-                        ? 'Afiliado / Cuenta con el servicio'
-                        : String(item.codEmpresa) === '000002'
-                          ? 'Solicita información en Talento Humano'
-                          : item.cupo && Number(item.cupo) > 0
-                            ? `Cupo: ${item.cupo}`
-                            : 'No tiene cupo disponible'}
-                    </p>
+                  <div className="company-block" key={`${item.codEmpresa}-${i}`}>
+                    <CompanyLogo 
+                      dominioLogo={item.logoEmpresa} 
+                      nomEmpresa={item.nomEmpresa} 
+                    />
+                    <div className="company-info">
+                      <h4 className="company-name">{item.nomEmpresa}</h4>
+                      <p className="company-cupo">
+                        {String(item.codEmpresa) === '000004'
+                          ? 'Afiliado / Cuenta con el servicio'
+                          : String(item.codEmpresa) === '000002'
+                            ? 'Solicita información en Talento Humano'
+                            : item.cupo && Number(item.cupo) > 0
+                              ? `Cupo: ${item.cupo}`
+                              : 'No tiene cupo disponible'}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-
-              {/* Tarjeta de Próximamente */}
-              <div className="company-block coming-soon-block">
-                <div className="coming-soon-logo">
-                  ?
-                </div>
-                <div className="company-info">
-                  <h4 className="company-name">Próximamente</h4>
-                  <p className="company-cupo">Nuevos beneficios están en camino</p>
-                </div>
-              </div>
+                ))}
               </div>
             </div>
           )}
@@ -133,16 +114,32 @@ function HomePage() {
   );
 }
 
-function App() {
+// Configuración del Data Router
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <HomePage />,
+  },
+  {
+    path: '/contratacion',
+    element: <Contratacion />,
+    loader: () => {
+      // Devuelve la promesa directamente en un objeto sin llamar a defer()[cite: 1]
+      return {
+        empleadosData: obtenerEmpleados(),
+      };
+    },
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
+  },
+]);
+
+export default function App() {
   return (
     <div className="app-shell">
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-        <Route path="/contratacion" element={ <Contratacion/>} />
-      </Routes>
+      <RouterProvider router={router} />
     </div>
   );
 }
-
-export default App;
