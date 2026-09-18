@@ -21,7 +21,7 @@ export default function Contratacion() {
               <input
                 id="empleado-input-disabled"
                 type="text"
-                placeholder="Escriba para buscar un empleado..."
+                placeholder="Cargando empleados..."
                 disabled
               />
             </div>

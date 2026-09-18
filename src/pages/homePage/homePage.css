@@ -1,0 +1,207 @@
+/* src/pages/HomePage.css */
+.home-page {
+  min-height: 100vh;
+  display: flex;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.9fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Panel lateral izquierdo fijo */
+.logo-panel {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  align-self: start;
+}
+
+.brand-logo {
+  width: auto;
+  height: 100vh;
+  object-fit: contain;
+}
+
+/* Header Móvil */
+.mobile-header {
+  display: none;
+  width: 100%;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.mobile-header-img {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  min-height: 50px;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+/* Panel de contenido derecho */
+.content-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 16px;
+}
+
+.content-panel h1 {
+  font-size: clamp(2.6rem, 4vw, 5rem);
+  line-height: 1.06;
+  color: var(--color-primary);
+  padding-bottom: 30px;
+  padding-right: 10%;
+  border-bottom: 2px solid var(--color-secondary);
+}
+
+.cedula-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 500px;
+  width: 300px;
+}
+
+.api-message {
+  margin-top: 18px;
+  max-width: 500px;
+}
+
+.api-response {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.results .welcome {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.company-block {
+  margin-bottom: 12px;
+}
+
+.company-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.company-name {
+  margin: 0 0 6px;
+  color: var(--color-secondary);
+  font-size: 1rem;
+}
+
+.company-cupo {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+/* Logos y contenedores específicos */
+.logo-container {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.company-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: fill;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+}
+
+.company-logo.is-loading {
+  display: none;
+}
+
+.company-logo.is-loaded {
+  width: 100%;
+  height: 100%;
+}
+
+.logo-skeleton {
+  width: 100%;
+  height: 100%;
+}
+
+.coming-soon-logo {
+  width: 48px;
+  height: 48px;
+  background-color: #f1f5f9;
+  border: 1.5px dashed var(--color-secondary);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  flex-shrink: 0;
+}
+
+/* Adaptatividad Móvil */
+@media (max-width: 768px) {
+  .home-page {
+    width: 100%;
+  }
+
+  .home-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo-panel {
+    display: none !important;
+  }
+
+  .mobile-header {
+    display: flex !important;
+  }
+
+  .mobile-header-img {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .content-panel {
+    width: 80%;
+    padding: 10px 10px 0 10px;
+  }
+
+  .content-panel h1 {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    padding-right: 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .cedula-form {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .consultar-btn {
+    width: 100%;
+  }
+}
