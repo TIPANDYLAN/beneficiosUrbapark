@@ -9,7 +9,7 @@ export default function Contratacion() {
   return (
     <div className="pagina-contratacion">
       <header className="header-seccion">
-        <h2>Módulo de Contratación</h2>
+        <h1>Módulo de Contratación</h1>
         <p>Seleccione un colaborador para continuar con el proceso.</p>
       </header>
 
@@ -17,7 +17,6 @@ export default function Contratacion() {
         <Suspense
           fallback={
             <div className="campo-grupo">
-              <label htmlFor="empleado-input-disabled">Empleado: </label>
               <input
                 id="empleado-input-disabled"
                 type="text"
@@ -36,7 +35,6 @@ export default function Contratacion() {
 
               return (
                 <div className="campo-grupo">
-                  <label htmlFor="empleado-input">Empleado: </label>
                   <input
                     id="empleado-input"
                     type="text"

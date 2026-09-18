@@ -60,6 +60,14 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
 }
 
+h1 span:first-of-type {
+  color: var(--color-primary);
+}
+
+h1 span:nth-of-type(n+2) {
+  color: var(--color-secondary);
+}
+
 /* ==========================================================================
    3. ESTÁNDAR GLOBAL DE FORMULARIOS (Labels, Inputs)
    ========================================================================== */

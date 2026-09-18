@@ -49,8 +49,8 @@ export default function HomePage() {
         </div>
         <div className="content-panel">
           <h1>
-            <span style={{ color: '#ff7328' }}>Beneficios</span>{' '}
-            <span style={{ color: '#362676' }} translate="no">Urbapark</span>
+            <span>Beneficios</span>{' '}
+            <span translate="no">Urbapark</span>
           </h1>
 
           <form className="cedula-form" onSubmit={handleSubmit}>

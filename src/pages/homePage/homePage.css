@@ -57,7 +57,6 @@
 .content-panel h1 {
   font-size: clamp(2.6rem, 4vw, 5rem);
   line-height: 1.06;
-  color: var(--color-primary);
   padding-bottom: 30px;
   padding-right: 10%;
   border-bottom: 2px solid var(--color-secondary);
