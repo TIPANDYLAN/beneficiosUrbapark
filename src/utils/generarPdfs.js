@@ -4,19 +4,42 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import AutorizacionSeguroMedico from '../templates/autorizacionDescuentoSeguroMedico';
 import CartaAcumulacionSueldos from '../templates/cartaAcumulacionSueldos';
+import ConsentimientoMediosElectronicos from '../templates/consentimientoMediosElectronicos';
+import DeclaracionDatosBiometricos from '../templates/declaracionDatosBiometricos';
+import ActaReglamentoInterno from '../templates/actaReglamentoInterno';
+import ConsentimientoAlcoholDrogas from '../templates/consentimientoAlcoholDrogas';
+import DeclaracionConsentimientoSSO from '../templates/declaracionConsentimientoSSO';
 
 export async function generarPaquetePdfs(objetoEmpleado, onProgress) {
   const zipMaster = new JSZip();
 
   const listaDocumentos = [
     {
-      nombreArchivo: '3.Autorizacion_Descuento_Seguro_Medico.pdf',
-      componente: <AutorizacionSeguroMedico empleado={objetoEmpleado} />,
+        nombreArchivo: '3.Autorizacion del Descuento de Seguro Médico.pdf',
+        componente: <AutorizacionSeguroMedico empleado={objetoEmpleado} />,
     },
     {
-    nombreArchivo: '4.Carta_Acumulacion_13er_14to_Sueldos.pdf',
-    componente: <CartaAcumulacionSueldos empleado={objetoEmpleado} />,
+        nombreArchivo: '4.Carta Acumulacion 13er y 14to Sueldos.pdf',
+        componente: <CartaAcumulacionSueldos empleado={objetoEmpleado} />,
     },
+    {
+        nombreArchivo: '5.Formato de Consentimiento Informado para Uso de Medios Electrónicos.pdf',
+        componente: <ConsentimientoMediosElectronicos empleado={objetoEmpleado} />,
+    },
+    {
+        nombreArchivo: '6.Declaración de Consentimiento para Tratamiento de Datos Personales Biometricos.pdf',
+        componente: <DeclaracionDatosBiometricos empleado={objetoEmpleado} />,
+    },
+    {
+        nombreArchivo: '7.Acta de Recepción y Aceptación del Reglamento Interno del Trabajo.pdf',
+        componente: <ActaReglamentoInterno empleado={objetoEmpleado} />,
+    },{
+        nombreArchivo: '8.Consentimiento Alcohol y Drogas.pdf',
+        componente: <ConsentimientoAlcoholDrogas empleado={objetoEmpleado} />,
+    },{
+        nombreArchivo: '11.Declaracion_Consentimiento_SSO.pdf',
+        componente: <DeclaracionConsentimientoSSO empleado={objetoEmpleado} />,
+    }
   ];
 
   for (let i = 0; i < listaDocumentos.length; i++) {
