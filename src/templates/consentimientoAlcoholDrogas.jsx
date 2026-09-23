@@ -91,10 +91,6 @@ export const ConsentimientoAlcoholDrogas = ({ empleado }) => {
     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
   ];
 
-  const dia = fechaActual.getDate();
-  const mes = meses[fechaActual.getMonth()];
-  const anio = fechaActual.getFullYear();
-
   return (
     <Document>
       <Page size="A4" style={styles.page}>
