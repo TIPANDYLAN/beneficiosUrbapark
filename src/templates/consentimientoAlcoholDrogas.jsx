@@ -149,7 +149,7 @@ export const ConsentimientoAlcoholDrogas = ({ empleado }) => {
 
         {/* Cierre y fecha */}
         <Text style={{ ...styles.paragraph, marginTop: 4 }}>
-          En constancia, firmo el presente consentimiento en la ciudad de Quito, a los <Text style={styles.bold}>{dia}</Text> días del mes de <Text style={styles.bold}>{mes}</Text> del año <Text style={styles.bold}>{anio}</Text>.
+          En constancia, firmo el presente consentimiento en la ciudad de Quito, a los <Text style={styles.bold}>___________</Text> días del mes de <Text style={styles.bold}>______________________</Text> del año <Text style={styles.bold}>________________</Text>.
         </Text>
 
         {/* Firma del Trabajador */}

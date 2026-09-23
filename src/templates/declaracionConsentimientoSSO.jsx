@@ -115,7 +115,7 @@ export const DeclaracionConsentimientoSSO = ({ empleado }) => {
 
         {/* Comparecientes */}
         <Text style={styles.paragraph}>
-          Comparecen al otorgamiento del presente documento, por una parte el señor@ <Text style={styles.bold}>{nombre} {apellido}</Text> por sus propios y personales derechos, a quien se llamará como <Text style={styles.italic}>TRABAJADOR</Text>; y, por otra parte la compañía <Text style={styles.bold}>ESTACIONAMIENTOS URBANOS URBAPARK S.A.</Text> legalmente representada por BURBANO DE LARA CORREA PABLO ENRIQUE en su calidad de REPRESENTANTE LEGAL, parte a la que se llamará como EMPLEADOR.
+          Comparecen al otorgamiento del presente documento, por una parte el/la señor(a) <Text style={styles.bold}>{nombre} {apellido}</Text> por sus propios y personales derechos, a quien se llamará como <Text style={styles.italic}>TRABAJADOR</Text>; y, por otra parte la compañía <Text style={styles.bold}>ESTACIONAMIENTOS URBANOS URBAPARK S.A.</Text> legalmente representada por BURBANO DE LARA CORREA PABLO ENRIQUE en su calidad de REPRESENTANTE LEGAL, parte a la que se llamará como EMPLEADOR.
         </Text>
 
         {/* I. Antecedentes */}
