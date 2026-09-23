@@ -85,12 +85,6 @@ export const ConsentimientoAlcoholDrogas = ({ empleado }) => {
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
   const cargo = empleado?.cargo || empleado?.desCargo || empleado?.nomCargo || 'Colaborador';
 
-  const fechaActual = new Date();
-  const meses = [
-    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-  ];
-
   return (
     <Document>
       <Page size="A4" style={styles.page}>
