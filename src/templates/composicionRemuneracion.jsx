@@ -84,7 +84,8 @@ export default function ComposicionRemuneracion({ empleado, montoBono, fechaEmis
         }`.trim();
 
     const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
-    const sueldo = empleado?.sueldo + '.00' || '0.00';
+      const sueldoNumero = empleado?.sueldo ? Number(empleado.sueldo).toFixed(2) : '482.00';
+      const sueldoTexto = empleado?.sueldoLetras || numeroALetras(sueldoNumero);
 
     const formatearFecha = (fechaStr) => {
         if (!fechaStr) return '';
@@ -130,7 +131,7 @@ export default function ComposicionRemuneracion({ empleado, montoBono, fechaEmis
                 </View>
 
                 <Text style={styles.paragraph}>
-                    Se establece que el/la colaborador(a) recibirá una remuneración mensual fija de <Text style={styles.bold}>USD {sueldo}</Text>.
+                    Se establece que el/la colaborador(a) recibirá una remuneración mensual fija de <Text style={styles.bold}>USD {sueldoNumero} ({sueldoTexto})</Text>.
                 </Text>
 
                 <Text style={styles.paragraph}>

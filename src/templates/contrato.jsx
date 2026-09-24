@@ -1,6 +1,6 @@
 // src/templates/Contrato.jsx
-import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import numeroALetras from '../utils/numeroALetras'
 
 const styles = StyleSheet.create({
   page: {
@@ -87,7 +87,8 @@ export default function Contrato({ empleado, fechaEmision }) {
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
   const ciudad = empleado?.ciudad || 's/n';
   const cargo = empleado?.cargo || 's/n';
-  const sueldo = empleado?.sueldo || '0.00';
+  const sueldoNumero = empleado?.sueldo ? Number(empleado.sueldo).toFixed(2) : '482.00';
+  const sueldoTexto = empleado?.sueldoLetras || numeroALetras(sueldoNumero);
   const direccion = empleado?.direccion || 's/n';
   const telefono = empleado?.telefono || 's/n';
   const celular = empleado?.celular || 's/n';
@@ -313,7 +314,7 @@ export default function Contrato({ empleado, fechaEmision }) {
         </Text>
         <Text style={styles.paragraph}>
           EL EMPLEADOR se obliga a pagar al TRABAJADOR, por los servicios prestados, la suma de{' '}
-          <Text style={styles.bold}>USD$ {sueldo}</Text>, cantidad que le será pagada mensualmente, de
+          <Text style={styles.bold}>USD$ {sueldoNumero} ({sueldoTexto})</Text>, cantidad que le será pagada mensualmente, de
           acuerdo con lo establecido por el EMPLEADOR.
         </Text>
         <Text style={styles.paragraph}>
