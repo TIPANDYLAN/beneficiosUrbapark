@@ -5,14 +5,14 @@ import { generarPaquetePdfs } from '../../utils/generarPdfs.js';
 import './contratacion.css';
 
 const DOCUMENTOS_DISPONIBLES = [
-  { id: 'actaReglamentoInterno', nombre: '1. Acta de Reglamento Interno' },
-  { id: 'consentimientoAlcoholDrogas', nombre: '2. Consentimiento Alcohol y Drogas' },
-  { id: 'declaracionConsentimientoSSO', nombre: '3. Declaración y Consentimiento SSO' },
-  { id: 'adendumAcuerdoVoluntades', nombre: '4. Adéndum y Acuerdo de Voluntades' },
-  { id: 'autorizacionDescuentoSeguro', nombre: '5. Autorización Descuento Seguro' },
-  { id: 'cartaAcumulacionSueldos', nombre: '6. Carta Acumulación de Sueldos' },
-  { id: 'consentimientoMediosElectronicos', nombre: '7. Consentimiento Medios Electrónicos' },
-  { id: 'declaracionDatosBiometricos', nombre: '8. Declaración Datos Biométricos' },
+  { id: 'actaReglamentoInterno', nombre: 'Acta de Reglamento Interno' },
+  { id: 'consentimientoAlcoholDrogas', nombre: 'Consentimiento Alcohol y Drogas' },
+  { id: 'declaracionConsentimientoSSO', nombre: 'Declaración y Consentimiento SSO' },
+  { id: 'adendumAcuerdoVoluntades', nombre: 'Adéndum y Acuerdo de Voluntades' },
+  { id: 'autorizacionDescuentoSeguro', nombre: 'Autorización Descuento Seguro' },
+  { id: 'cartaAcumulacionSueldos', nombre: 'Carta Acumulación de Sueldos' },
+  { id: 'consentimientoMediosElectronicos', nombre: 'Consentimiento Medios Electrónicos' },
+  { id: 'declaracionDatosBiometricos', nombre: 'Declaración Datos Biométricos' },
 ];
 
 export default function Contratacion() {
@@ -178,24 +178,26 @@ export default function Contratacion() {
             }}
           >
             {DOCUMENTOS_DISPONIBLES.map((doc) => (
-              <label
-                key={doc.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  cursor: generando ? 'not-allowed' : 'pointer',
-                  fontSize: '0.9rem',
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={documentosSeleccionados.includes(doc.id)}
-                  onChange={() => handleToggleDocumento(doc.id)}
-                  disabled={generando}
-                />
-                <span>{doc.nombre}</span>
-              </label>
+              <div className="checklist-box">
+                <label
+                  key={doc.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: generando ? 'not-allowed' : 'pointer',
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={documentosSeleccionados.includes(doc.id)}
+                    onChange={() => handleToggleDocumento(doc.id)}
+                    disabled={generando}
+                  />
+                  <span>{doc.nombre}</span>
+                </label>
+              </div>
             ))}
           </div>
         </div>
