@@ -14,7 +14,7 @@ import DeclaracionConsentimientoSSO from '../templates/declaracionConsentimiento
 import AdendumAcuerdoVoluntades from '../templates/adendumAcuerdoVoluntades';
 import ComposicionRemuneracion from '../templates/composicionRemuneracion';
 
-export async function generarPaquetePdfs(objetoEmpleado, idsSeleccionados = [], opciones = { montoBono: 0.00 }, onProgress) {
+export async function generarPaquetePdfs(objetoEmpleado, idsSeleccionados = [], opciones = { montoBono: 0.00, fechaEmision: '' }, onProgress) {
   const zipMaster = new JSZip();
 
   // Mapeo de IDs (del componente Contratacion.jsx) con las plantillas y nombres de archivo
@@ -57,6 +57,7 @@ export async function generarPaquetePdfs(objetoEmpleado, idsSeleccionados = [], 
         <ComposicionRemuneracion
           empleado={objetoEmpleado}
           montoBono={opciones?.montoBono ?? 0.00}
+          fechaEmision={opciones?.fechaEmision ?? ''}
         />
       ),
     },

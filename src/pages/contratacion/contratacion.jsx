@@ -16,6 +16,8 @@ const DOCUMENTOS_DISPONIBLES = [
   { id: 'composicionRemuneracion', nombre: 'Composición de Remuneración' },
 ];
 
+const hoyFormatted = new Date().toISOString().split('T')[0];
+
 export default function Contratacion() {
   const { empleadosData } = useLoaderData();
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState('');
@@ -24,6 +26,7 @@ export default function Contratacion() {
   const [progreso, setProgreso] = useState(0);
   const [montoBono, setMontoBono] = useState('0.00');
   const [documentosSeleccionados, setDocumentosSeleccionados] = useState([]);
+  const [fechaEmision, setFechaEmision] = useState(hoyFormatted);
 
   const handleToggleDocumento = (id) => {
     setDocumentosSeleccionados((prev) =>
@@ -67,7 +70,7 @@ export default function Contratacion() {
       await generarPaquetePdfs(
         objetoEmpleado,
         documentosSeleccionados,
-        { montoBono: parseFloat(montoBono) || 0 },
+        { montoBono: parseFloat(montoBono) || 0, fechaEmision: fechaEmision  },
         (porcentaje) => {
           setProgreso(porcentaje);
         }
@@ -103,6 +106,16 @@ export default function Contratacion() {
                 id="empleado-input-disabled"
                 type="text"
                 placeholder="Cargando empleados..."
+                disabled
+              />
+              <label htmlFor="fecha-input" style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>
+                Fecha de emisión de los documentos:
+              </label>
+              <input
+                className="fecha-input"
+                type="date"
+                value={fechaEmision}
+                onChange={(e) => setFechaEmision(e.target.value)}
                 disabled
               />
             </div>
@@ -144,6 +157,16 @@ export default function Contratacion() {
                       return <option key={emp.id || emp.cedula || index} value={nombreCompleto} />;
                     })}
                   </datalist>
+                  <label htmlFor="fecha-input" style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>
+                    Fecha de emisión de los documentos:
+                  </label>
+                  <input
+                    className="fecha-input"
+                    type="date"
+                    value={fechaEmision}
+                    onChange={(e) => setFechaEmision(e.target.value)}
+                    disabled={generando}
+                  />
                 </div>
               );
             }}

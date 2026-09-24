@@ -20,6 +20,14 @@
     width: 100%;
 }
 
+.fecha-input {
+    padding: '8px 12px';
+    border-radius: '6px';
+    border: '1px solid #ccc';
+    font-size: '0.9rem';
+    max-width: '200px'
+}
+
 .checklist-box {
     position: relative;
     overflow: hidden;
@@ -31,14 +39,14 @@
     align-items: center;
     cursor: pointer;
 
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              border-color 0.2s ease, 
-              box-shadow 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .checklist-box,
 .checklist-box * {
-  user-select: none;
+    user-select: none;
 }
 
 .checklist-box:has(input[type="checkbox"]:checked) {
@@ -46,7 +54,7 @@
 }
 
 .checklist-box:active {
-  transform: scale(0.95);
+    transform: scale(0.95);
 }
 
 .checklist-box label {
@@ -55,100 +63,102 @@
 
 /* 1. Estilo base del checkbox desmarcado */
 .checklist-box input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 15px;
-  height: 100%;
-  margin: 0;
-  outline: none;
-  cursor: pointer;
-  background-color: #e0e0e0;
-  transition: background-color 0.25s ease;
-  text-decoration: none;
+    appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 15px;
+    height: 100%;
+    margin: 0;
+    outline: none;
+    cursor: pointer;
+    background-color: #e0e0e0;
+    transition: background-color 0.25s ease;
+    text-decoration: none;
 }
 
 /* 2. Cuando está MARCADO: fondo color primario */
 .checklist-box input[type="checkbox"]:checked {
-  background-color: var(--color-primary, #0056b3);
-  border-color: var(--color-primary, #0056b3);
+    background-color: var(--color-primary, #0056b3);
+    border-color: var(--color-primary, #0056b3);
 }
 
 
 @keyframes rebote {
-  0% {
-    transform: scale(0.95);
-  }
-  50% {
-    transform: scale(1.01);
-  }
-  70% {
-    transform: scale(0.99);
-  }
-  100% {
-    transform: scale(1);
-  }
+    0% {
+        transform: scale(0.95);
+    }
+
+    50% {
+        transform: scale(1.01);
+    }
+
+    70% {
+        transform: scale(0.99);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .wrapper-documento {
-  grid-column: span 1;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    grid-column: span 1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Cuando la tarjeta de Composición de Remuneración está MARCADA */
 .wrapper-documento.span-dos-columnas {
-  grid-column: span 2;
+    grid-column: span 2;
 }
 
 /* Alineación interna de la tarjeta */
 .checklist-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 100%;
 }
 
 /* Estilos del campo de bono integrado */
 .campo-bono-inline {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-  flex-shrink: 0;
-
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
 .bono-label {
-  font-size: 0.8rem;
-  color: #555;
-  white-space: nowrap;
+    font-size: 0.8rem;
+    color: #555;
+    white-space: nowrap;
 }
 
 .campo-bono-inline input {
-  margin: 0 !important;
-  min-height: 41px !important;
+    margin: 0 !important;
+    min-height: 41px !important;
 }
 
 .campo-bono-inline input:focus {
-  border-color: var(--color-primary, #0056b3);
-  background-color: #ffffff;
+    border-color: var(--color-primary, #0056b3);
+    background-color: #ffffff;
 }
 
 .checklist-box:has(.campo-bono-inline:active) {
-  transform: none !important;
+    transform: none !important;
 }
 
 /* Responsividad: En pantallas móviles vuelve a ocupar 1 sola columna */
 @media (max-width: 640px) {
-  .wrapper-documento.span-dos-columnas {
-    grid-column: span 1;
-  }
-  
-  .checklist-box {
-    flex-wrap: wrap;
-  }
+    .wrapper-documento.span-dos-columnas {
+        grid-column: span 1;
+    }
+
+    .checklist-box {
+        flex-wrap: wrap;
+    }
 }
