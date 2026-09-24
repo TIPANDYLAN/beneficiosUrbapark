@@ -1,5 +1,5 @@
 // src/pages/Contratacion.jsx
-import React, { useState, Suspense } from 'react';
+import React, { useState,useRef, Suspense } from 'react';
 import { useLoaderData, Await } from 'react-router-dom';
 import { generarPaquetePdfs } from '../../utils/generarPdfs.js';
 import './contratacion.css';
@@ -13,6 +13,7 @@ const DOCUMENTOS_DISPONIBLES = [
   { id: 'cartaAcumulacionSueldos', nombre: 'Carta Acumulación de Sueldos' },
   { id: 'consentimientoMediosElectronicos', nombre: 'Consentimiento Medios Electrónicos' },
   { id: 'declaracionDatosBiometricos', nombre: 'Declaración Datos Biométricos' },
+  { id: 'composicionRemuneracion', nombre: 'Composición de Remuneración' },
 ];
 
 export default function Contratacion() {
@@ -21,26 +22,32 @@ export default function Contratacion() {
   const [objetoEmpleado, setObjetoEmpleado] = useState(null);
   const [generando, setGenerando] = useState(false);
   const [progreso, setProgreso] = useState(0);
+  const [montoBono, setMontoBono] = useState('0.00');
+  const [documentosSeleccionados, setDocumentosSeleccionados] = useState([]);
 
-  // Estado para los checkboxes (por defecto todos seleccionados)
-  const [documentosSeleccionados, setDocumentosSeleccionados] = useState(
-    DOCUMENTOS_DISPONIBLES.map((doc) => doc.id)
-  );
-
-  // Handler para marcar / desmarcar individualmente
   const handleToggleDocumento = (id) => {
     setDocumentosSeleccionados((prev) =>
       prev.includes(id) ? prev.filter((docId) => docId !== id) : [...prev, id]
     );
   };
 
-  // Handler para seleccionar / deseleccionar todos a la vez
   const handleToggleTodos = () => {
     if (documentosSeleccionados.length === DOCUMENTOS_DISPONIBLES.length) {
       setDocumentosSeleccionados([]);
     } else {
       setDocumentosSeleccionados(DOCUMENTOS_DISPONIBLES.map((doc) => doc.id));
     }
+  };
+
+  const isDraggingBono = useRef(false);
+
+  const handleCardClick = (e, docId) => {
+    // Si el clic comenzó o terminó dentro del área del bono, ignoramos el toggle
+    if (isDraggingBono.current || e.target.closest('.campo-bono-inline input')) {
+      isDraggingBono.current = false;
+      return;
+    }
+    handleToggleDocumento(docId);
   };
 
   const handleSubmit = async (e) => {
@@ -56,10 +63,15 @@ export default function Contratacion() {
     setProgreso(0);
 
     try {
-      // Pasa el objeto del empleado y la lista de IDs seleccionados a la utilidad
-      await generarPaquetePdfs(objetoEmpleado, documentosSeleccionados, (porcentaje) => {
-        setProgreso(porcentaje);
-      });
+      // Enviamos también el monto del bono en las opciones
+      await generarPaquetePdfs(
+        objetoEmpleado, 
+        documentosSeleccionados, 
+        { montoBono: parseFloat(montoBono) || 0 }, 
+        (porcentaje) => {
+          setProgreso(porcentaje);
+        }
+      );
     } catch (error) {
       console.error('Error al generar documentación:', error);
       alert('Ocurrió un error al generar la documentación.');
@@ -114,7 +126,6 @@ export default function Contratacion() {
                       const valor = e.target.value;
                       setEmpleadoSeleccionado(valor);
 
-                      // Busca y guarda el objeto de datos completo del colaborador seleccionado
                       const empEncontrado = lista.find((emp) => {
                         const nombreCompleto = `${emp.nombre || emp.nombres || ''} ${
                           emp.apellido || emp.apellidos || ''
@@ -162,7 +173,7 @@ export default function Contratacion() {
                 color: '#0056b3',
                 cursor: 'pointer',
                 fontSize: '0.85rem',
-                textDecoration: 'underline',
+                textDecoration: 'none',
               }}
             >
               {todosSeleccionados ? 'Deseleccionar todos' : 'Seleccionar todos'}
@@ -173,32 +184,64 @@ export default function Contratacion() {
             className="grid-documentos"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-              gap: '10px',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '12px',
             }}
           >
-            {DOCUMENTOS_DISPONIBLES.map((doc) => (
-              <div className="checklist-box">
-                <label
-                  key={doc.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    cursor: generando ? 'not-allowed' : 'pointer',
-                    fontSize: '0.9rem',
-                  }}
-                >
+            {DOCUMENTOS_DISPONIBLES.map((doc) => {
+        const estaSeleccionado = documentosSeleccionados.includes(doc.id);
+        const esComposicion = doc.id === 'composicionRemuneracion';
+        const ocupaDosColumnas = esComposicion && estaSeleccionado;
+
+        return (
+          <div
+            key={doc.id}
+            className={`wrapper-documento ${ocupaDosColumnas ? 'span-dos-columnas' : ''}`}
+          >
+            <div
+              className="checklist-box"
+              onMouseDown={(e) => {
+                if (e.target.closest('.campo-bono-inline input')) {
+                  isDraggingBono.current = true;
+                } else {
+                  isDraggingBono.current = false;
+                }
+              }}
+              onClick={(e) => handleCardClick(e, doc.id)}
+            >
+              <input
+                type="checkbox"
+                checked={estaSeleccionado}
+                readOnly 
+                disabled={generando}
+              />
+              <span className="checklist-texto">{doc.nombre}</span>
+
+              {esComposicion && estaSeleccionado && (
+                <div className="campo-bono-inline">
+                  <span className="bono-label">Monto:</span>
+
                   <input
-                    type="checkbox"
-                    checked={documentosSeleccionados.includes(doc.id)}
-                    onChange={() => handleToggleDocumento(doc.id)}
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={montoBono}
+                    onChange={(e) => setMontoBono(e.target.value)}
                     disabled={generando}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      isDraggingBono.current = true;
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
                   />
-                  <span>{doc.nombre}</span>
-                </label>
-              </div>
-            ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
           </div>
         </div>
 

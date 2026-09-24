@@ -12,8 +12,9 @@ import ActaReglamentoInterno from '../templates/actaReglamentoInterno';
 import ConsentimientoAlcoholDrogas from '../templates/consentimientoAlcoholDrogas';
 import DeclaracionConsentimientoSSO from '../templates/declaracionConsentimientoSSO';
 import AdendumAcuerdoVoluntades from '../templates/adendumAcuerdoVoluntades';
+import ComposicionRemuneracion from '../templates/composicionRemuneracion';
 
-export async function generarPaquetePdfs(objetoEmpleado, idsSeleccionados = [], onProgress) {
+export async function generarPaquetePdfs(objetoEmpleado, idsSeleccionados = [], opciones = { montoBono: 0.00 }, onProgress) {
   const zipMaster = new JSZip();
 
   // Mapeo de IDs (del componente Contratacion.jsx) con las plantillas y nombres de archivo
@@ -49,6 +50,15 @@ export async function generarPaquetePdfs(objetoEmpleado, idsSeleccionados = [], 
     declaracionConsentimientoSSO: {
       nombreArchivo: '11.Declaracion_Consentimiento_SSO.pdf',
       componente: <DeclaracionConsentimientoSSO empleado={objetoEmpleado} />,
+    },
+    composicionRemuneracion: {
+      nombreArchivo: '12.Composicion_de_Remuneracion.pdf',
+      componente: (
+        <ComposicionRemuneracion
+          empleado={objetoEmpleado}
+          montoBono={opciones?.montoBono ?? 0.00}
+        />
+      ),
     },
   };
 
