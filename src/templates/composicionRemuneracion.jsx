@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   signatureSpace: {
-    height: 50,
+    height: 120,
   },
   signatureLine: {
     width: 200,
@@ -85,7 +85,7 @@ export default function ComposicionRemuneracion({ empleado, montoBono }) {
   }`.trim();
 
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
-  const sueldo = empleado?.sueldo || '482.00';
+  const sueldo = empleado?.sueldo + '.00' || '0.00';
 
   const fechaActual = new Date().toLocaleDateString('es-EC', {
     day: 'numeric',
@@ -137,14 +137,6 @@ export default function ComposicionRemuneracion({ empleado, montoBono }) {
 
         {/* Sección de Firmas */}
         <View style={styles.signatureSection}>
-          <View style={{ width: '48%' }}>
-            <Text style={[styles.signatureText, styles.bold]}>FIRMAS RESPONSABLES</Text>
-            <View style={styles.signatureSpace} />
-            <View style={styles.signatureLine} />
-            <Text style={styles.signatureText}>Firma del colaborador(a):</Text>
-            <Text style={styles.signatureText}>Nombre: {nombreEmpleado}</Text>
-            <Text style={styles.signatureText}>C.I.: {cedula}</Text>
-          </View>
 
           <View style={{ width: '48%' }}>
             <Text style={[styles.signatureText, styles.bold]}>&nbsp;</Text>
@@ -154,6 +146,15 @@ export default function ComposicionRemuneracion({ empleado, montoBono }) {
             <Text style={styles.signatureText}>Nombre: Diana Salazar</Text>
             <Text style={styles.signatureText}>Cargo: Jefe de Talento Humano</Text>
             <Text style={[styles.signatureText, styles.bold]}>URBAPARK S.A.</Text>
+          </View>
+
+          <View style={{ width: '48%' }}>
+            <Text style={[styles.signatureText, styles.bold]}>FIRMAS RESPONSABLES</Text>
+            <View style={styles.signatureSpace} />
+            <View style={styles.signatureLine} />
+            <Text style={styles.signatureText}>Firma del colaborador(a):</Text>
+            <Text style={styles.signatureText}>Nombre: {nombreEmpleado}</Text>
+            <Text style={styles.signatureText}>C.I.: {cedula}</Text>
           </View>
         </View>
       </Page>

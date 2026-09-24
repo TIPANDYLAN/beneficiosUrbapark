@@ -7,7 +7,8 @@ function mapEmpleado(raw) {
     nombre: raw.NOMBRES || raw.nombres || raw.full_name || 'Sin nombre',
     apellido: raw.APELLIDOS || raw.apellidos || '',
     cargo: raw.CAR_DESCRIPCION || raw.puesto || raw.position || 'Sin cargo',
-    correo: raw.MAIL_MFEMP
+    correo: raw.MAIL_MFEMP,
+    sueldo: raw.SLD_MFEDC
   };
 }
 

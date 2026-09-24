@@ -166,20 +166,8 @@ export const AdendumAcuerdoVoluntades = ({ empleado }) => {
           Las partes se ratifican en el contenido de las cláusulas precedentes, en razón de todo lo cual en unidad de acto con la autoridad respectiva firman por triplicado en ejemplares del mismo valor y tenor.
         </Text>
 
-        {/* Sección de Firmas */}
         <View style={styles.signaturesContainer}>
-          {/* Firma Trabajador */}
-          <View style={styles.signatureBox}>
-            <View style={styles.signatureSpace} />
-            <View style={styles.signatureLine} />
-            <Text style={styles.signatureText}>
-              <Text style={styles.bold}>Nombres: </Text>{nombre} {apellido}{'\n'}
-              <Text style={styles.bold}>Cédula: </Text>{cedula}{'\n'}
-              <Text style={styles.bold}>TRABAJADOR</Text>
-            </Text>
-          </View>
 
-          {/* Firma Empleador */}
           <View style={styles.signatureBox}>
             <View style={styles.signatureSpace} />
             <View style={styles.signatureLine} />
@@ -187,6 +175,16 @@ export const AdendumAcuerdoVoluntades = ({ empleado }) => {
               <Text style={styles.bold}>BURBANO DE LARA CORREA PABLO</Text>{'\n'}
               <Text style={styles.bold}>ESTACIONAMIENTOS URBANOS URBAPARK S.A.</Text>{'\n'}
               <Text style={styles.bold}>EMPLEADOR</Text>
+            </Text>
+          </View>
+
+          <View style={styles.signatureBox}>
+            <View style={styles.signatureSpace} />
+            <View style={styles.signatureLine} />
+            <Text style={styles.signatureText}>
+              <Text style={styles.bold}>Nombres: </Text>{nombre} {apellido}{'\n'}
+              <Text style={styles.bold}>Cédula: </Text>{cedula}{'\n'}
+              <Text style={styles.bold}>TRABAJADOR</Text>
             </Text>
           </View>
         </View>
