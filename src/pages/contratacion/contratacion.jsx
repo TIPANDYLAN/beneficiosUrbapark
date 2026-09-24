@@ -14,6 +14,7 @@ const DOCUMENTOS_DISPONIBLES = [
   { id: 'consentimientoMediosElectronicos', nombre: 'Consentimiento Medios Electrónicos' },
   { id: 'declaracionDatosBiometricos', nombre: 'Declaración Datos Biométricos' },
   { id: 'composicionRemuneracion', nombre: 'Composición de Remuneración' },
+  { id: 'contrato', nombre: 'Contrato Individual de Trabajo' },
 ];
 
 const hoyFormatted = new Date().toISOString().split('T')[0];

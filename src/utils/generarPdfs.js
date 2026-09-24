@@ -13,6 +13,7 @@ import ConsentimientoAlcoholDrogas from '../templates/consentimientoAlcoholDroga
 import DeclaracionConsentimientoSSO from '../templates/declaracionConsentimientoSSO';
 import AdendumAcuerdoVoluntades from '../templates/adendumAcuerdoVoluntades';
 import ComposicionRemuneracion from '../templates/composicionRemuneracion';
+import Contrato from '../templates/contrato';
 
 export async function generarPaquetePdfs(objetoEmpleado, idsSeleccionados = [], opciones = { montoBono: 0.00, fechaEmision: '' }, onProgress) {
   const zipMaster = new JSZip();
@@ -69,6 +70,15 @@ export async function generarPaquetePdfs(objetoEmpleado, idsSeleccionados = [], 
         />
       ),
     },
+    contrato: {
+      nombreArchivo: '13.Contrato_Individual_de_Trabajo.pdf',
+      componente: (
+        <Contrato
+          empleado={objetoEmpleado}
+          fechaEmision={opciones?.fechaEmision}
+        />
+      ),
+    },
   };
 
   // Filtrar solo los documentos seleccionados mediante los checkboxes
@@ -96,6 +106,7 @@ export async function generarPaquetePdfs(objetoEmpleado, idsSeleccionados = [], 
 
   // Descargar ZIP final con la cédula del colaborador
   const zipBlob = await zipMaster.generateAsync({ type: 'blob' });
-  const idEmpleado = objetoEmpleado?.cedula || objetoEmpleado?.numCedula || 'Empleado';
-  saveAs(zipBlob, `Documentos_Contratacion_${idEmpleado}.zip`);
+  const idEmpleado = objetoEmpleado?.cedula || objetoEmpleado?.numCedula || '100000000';
+  const nombreEmpleado = objetoEmpleado?.nombre + ' ' + objetoEmpleado?.apellido || objetoEmpleado?.numCedula || 'Empleado';
+  saveAs(zipBlob, `${nombreEmpleado}_${idEmpleado}.zip`);
 }
