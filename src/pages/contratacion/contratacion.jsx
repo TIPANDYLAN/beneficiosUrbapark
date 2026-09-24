@@ -45,7 +45,6 @@ export default function Contratacion() {
   const isDraggingBono = useRef(false);
 
   const handleCardClick = (e, docId) => {
-    // Si el clic comenzó o terminó dentro del área del bono, ignoramos el toggle
     if (isDraggingBono.current || e.target.closest('.campo-bono-inline input')) {
       isDraggingBono.current = false;
       return;
@@ -66,7 +65,6 @@ export default function Contratacion() {
     setProgreso(0);
 
     try {
-      // Enviamos también el monto del bono en las opciones
       await generarPaquetePdfs(
         objetoEmpleado,
         documentosSeleccionados,
@@ -174,7 +172,7 @@ export default function Contratacion() {
         </Suspense>
 
         {/* Sección de Selección de Documentos */}
-        <div className="seccion-documentos" style={{ marginTop: '20px', marginBottom: '20px' }}>
+        <div className="seccion-documentos" style={{ marginBottom: '20px' }}>
           <div
             style={{
               display: 'flex',

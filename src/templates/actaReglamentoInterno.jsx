@@ -80,21 +80,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ActaReglamentoInterno = ({ empleado }) => {
+export const ActaReglamentoInterno = ({ empleado, fechaEmision }) => {
   const nombre = empleado?.nombres || empleado?.nombre || '';
   const apellido = empleado?.apellidos || empleado?.apellido || '';
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
   const cargo = empleado?.cargo || empleado?.desCargo || empleado?.nomCargo || 'Colaborador';
 
-  const fechaActual = new Date();
-  const meses = [
-    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-  ];
+  const obtenerPartesFecha = (fechaStr) => {
+    if (!fechaStr) return { dia: '', mes: '', anio: '' };
 
-  const dia = fechaActual.getDate();
-  const mes = meses[fechaActual.getMonth()];
-  const anio = fechaActual.getFullYear();
+    const [year, month, day] = fechaStr.split('-');
+    const fechaObj = new Date(year, month - 1, day);
+
+    return {
+      dia: fechaObj.getDate(),
+      mes: fechaObj.toLocaleDateString('es-EC', { month: 'long' }),
+      anio: fechaObj.getFullYear(),
+    };
+  };
+
+  const { dia, mes, anio } = obtenerPartesFecha(fechaEmision);
 
   return (
     <Document>
