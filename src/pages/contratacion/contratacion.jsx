@@ -1,5 +1,5 @@
 // src/pages/Contratacion.jsx
-import React, { useState,useRef, Suspense } from 'react';
+import React, { useState, useRef, Suspense } from 'react';
 import { useLoaderData, Await } from 'react-router-dom';
 import { generarPaquetePdfs } from '../../utils/generarPdfs.js';
 import './contratacion.css';
@@ -65,9 +65,9 @@ export default function Contratacion() {
     try {
       // Enviamos también el monto del bono en las opciones
       await generarPaquetePdfs(
-        objetoEmpleado, 
-        documentosSeleccionados, 
-        { montoBono: parseFloat(montoBono) || 0 }, 
+        objetoEmpleado,
+        documentosSeleccionados,
+        { montoBono: parseFloat(montoBono) || 0 },
         (porcentaje) => {
           setProgreso(porcentaje);
         }
@@ -127,9 +127,8 @@ export default function Contratacion() {
                       setEmpleadoSeleccionado(valor);
 
                       const empEncontrado = lista.find((emp) => {
-                        const nombreCompleto = `${emp.nombre || emp.nombres || ''} ${
-                          emp.apellido || emp.apellidos || ''
-                        }`.trim();
+                        const nombreCompleto = `${emp.nombre || emp.nombres || ''} ${emp.apellido || emp.apellidos || ''
+                          }`.trim();
                         return nombreCompleto.toLowerCase() === valor.trim().toLowerCase();
                       });
 
@@ -140,9 +139,8 @@ export default function Contratacion() {
                   />
                   <datalist id="empleados-list">
                     {lista.map((emp, index) => {
-                      const nombreCompleto = `${emp.nombre || emp.nombres || ''} ${
-                        emp.apellido || emp.apellidos || ''
-                      }`.trim() || 'Sin nombre';
+                      const nombreCompleto = `${emp.nombre || emp.nombres || ''} ${emp.apellido || emp.apellidos || ''
+                        }`.trim() || 'Sin nombre';
                       return <option key={emp.id || emp.cedula || index} value={nombreCompleto} />;
                     })}
                   </datalist>
@@ -189,59 +187,59 @@ export default function Contratacion() {
             }}
           >
             {DOCUMENTOS_DISPONIBLES.map((doc) => {
-        const estaSeleccionado = documentosSeleccionados.includes(doc.id);
-        const esComposicion = doc.id === 'composicionRemuneracion';
-        const ocupaDosColumnas = esComposicion && estaSeleccionado;
+              const estaSeleccionado = documentosSeleccionados.includes(doc.id);
+              const esComposicion = doc.id === 'composicionRemuneracion';
+              const ocupaDosColumnas = esComposicion && estaSeleccionado;
 
-        return (
-          <div
-            key={doc.id}
-            className={`wrapper-documento ${ocupaDosColumnas ? 'span-dos-columnas' : ''}`}
-          >
-            <div
-              className="checklist-box"
-              onMouseDown={(e) => {
-                if (e.target.closest('.campo-bono-inline input')) {
-                  isDraggingBono.current = true;
-                } else {
-                  isDraggingBono.current = false;
-                }
-              }}
-              onClick={(e) => handleCardClick(e, doc.id)}
-            >
-              <input
-                type="checkbox"
-                checked={estaSeleccionado}
-                readOnly 
-                disabled={generando}
-              />
-              <span className="checklist-texto">{doc.nombre}</span>
-
-              {esComposicion && estaSeleccionado && (
-                <div className="campo-bono-inline">
-                  <span className="bono-label">Monto:</span>
-
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={montoBono}
-                    onChange={(e) => setMontoBono(e.target.value)}
-                    disabled={generando}
+              return (
+                <div
+                  key={doc.id}
+                  className={`wrapper-documento ${ocupaDosColumnas ? 'span-dos-columnas' : ''}`}
+                >
+                  <div
+                    className="checklist-box"
                     onMouseDown={(e) => {
-                      e.stopPropagation();
-                      isDraggingBono.current = true;
+                      if (e.target.closest('.campo-bono-inline input')) {
+                        isDraggingBono.current = true;
+                      } else {
+                        isDraggingBono.current = false;
+                      }
                     }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  />
+                    onClick={(e) => handleCardClick(e, doc.id)}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={estaSeleccionado}
+                      readOnly
+                      disabled={generando}
+                    />
+                    <span className="checklist-texto">{doc.nombre}</span>
+
+                    {esComposicion && estaSeleccionado && (
+                      <div className="campo-bono-inline">
+                        <span className="bono-label">Monto:</span>
+
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={montoBono}
+                          onChange={(e) => setMontoBono(e.target.value)}
+                          disabled={generando}
+                          onMouseDown={(e) => {
+                            e.stopPropagation();
+                            isDraggingBono.current = true;
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>
-          </div>
-        );
-      })}
+              );
+            })}
           </div>
         </div>
 
