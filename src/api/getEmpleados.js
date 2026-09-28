@@ -1,18 +1,28 @@
 // src/api/getEmpleados.js
 
 // Mappeador: Define la equivalencia entre la API externa y tu modelo interno
+// Helper para sanitizar y limpiar cadenas de texto
+const cleanStr = (val, fallback = '') => {
+  if (val === null || val === undefined) return fallback;
+  const cleaned = String(val).replace(/\s+/g, ' ').trim();
+  return cleaned || fallback;
+};
+
 function mapEmpleado(raw) {
+  if (!raw) return {};
+
   return {
-    cedula: raw.DOCI_MFEMP || raw.documento || raw.identificacion || '',
-    nombre: raw.NOMBRES || raw.nombres || raw.full_name || 'Sin nombre',
-    apellido: raw.APELLIDOS || raw.apellidos || '',
-    cargo: raw.CAR_DESCRIPCION || raw.puesto || raw.position || 'Sin cargo',
-    correo: raw.MAIL_MFEMP,
-    sueldo: raw.SLD_MFEDC,
-    ubicacion: raw.MTFSUC_DESC,
-    ciudad: raw.CIUD_MFEMP,
-    celular: raw.TLFCL_MFEMP,
-    direccion: raw.DIR_MFEMP
+    cedula: cleanStr(raw.DOCI_MFEMP || raw.documento || raw.identificacion),
+    nombre: cleanStr(raw.NOMBRES || raw.nombres || raw.full_name, 'Sin nombre'),
+    apellido: cleanStr(raw.APELLIDOS || raw.apellidos),
+    cargo: cleanStr(raw.CAR_DESCRIPCION || raw.puesto || raw.position, 'Sin cargo'),
+    correo: cleanStr(raw.MAIL_MFEMP || raw.correo || raw.email),
+    sueldo: raw.SLD_MFEDC || raw.sueldo || 0,
+    ubicacion: cleanStr(raw.MTFSUC_DESC || raw.ubicacion),
+    ciudad: cleanStr(raw.CIUD_MFEMP || raw.ciudad),
+    provincia: cleanStr(raw.DSC_MFPVC || raw.provincia),
+    celular: cleanStr(raw.TLFCL_MFEMP || raw.celular || raw.telefono),
+    direccion: cleanStr(raw.DIR_MFEMP || raw.direccion)
   };
 }
 
