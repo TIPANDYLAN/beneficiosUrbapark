@@ -79,12 +79,24 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ConsentimientoAlcoholDrogas = ({ empleado }) => {
+export const ConsentimientoAlcoholDrogas = ({ empleado, fechaEmision }) => {
   const nombre = empleado?.nombres || empleado?.nombre || '';
   const apellido = empleado?.apellidos || empleado?.apellido || '';
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
   const cargo = empleado?.cargo || empleado?.desCargo || empleado?.nomCargo || 'Colaborador';
 
+  const formatearFecha = (fechaStr) => {
+    if (!fechaStr) return '';
+    const [year, month, day] = fechaStr.split('-');
+    const fechaObj = new Date(year, month - 1, day);
+    return fechaObj.toLocaleDateString('es-EC', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  };
+
+  const fechaActual = formatearFecha(fechaEmision);
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -104,7 +116,7 @@ export const ConsentimientoAlcoholDrogas = ({ empleado }) => {
 
         {/* Datos del Trabajador */}
         <Text style={styles.paragraph}>
-          Yo, <Text style={styles.bold}>{nombre} {apellido}</Text>, con número de cédula de ciudadanía <Text style={styles.bold}>{cedula}</Text>, en calidad de trabajador(a) de la empresa <Text style={styles.bold}>ESTACIONAMIENTOS URBANOS URBAPARK S.A.</Text>, con el cargo de <Text style={styles.bold}>{cargo}</Text>, manifiesto de manera libre, voluntaria y consciente que, a partir de la presente fecha:
+          Yo, <Text style={styles.bold}>{nombre} {apellido}</Text>, con número de cédula de ciudadanía <Text style={styles.bold}>{cedula}</Text>, en calidad de trabajador(a) de la empresa <Text style={styles.bold}>ESTACIONAMIENTOS URBANOS URBAPARK S.A.</Text>, con el cargo de <Text style={styles.bold}>{cargo}</Text>, manifiesto de manera libre, voluntaria y consciente que, a partir de la presente fecha: {fechaActual}
         </Text>
 
         {/* Cuerpo del texto */}
