@@ -88,7 +88,13 @@ export const DeclaracionConsentimientoSSO = ({ empleado, fechaEmision }) => {
   const cargo = empleado?.cargo || empleado?.desCargo || empleado?.nomCargo || 'Colaborador';
   const fechaIngreso = empleado?.ingreso || empleado?.fechaContratacion || '';
   const ciudad = toTitleCase(empleado?.ciudad);
-
+  
+  function toTitleCase(texto) {
+    if (!texto) return '';
+    return String(texto)
+      .toLowerCase()
+      .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+  }
   
   const formatearFechaTexto = (fechaStr) => {
     if (!fechaStr) return '';
@@ -114,12 +120,6 @@ export const DeclaracionConsentimientoSSO = ({ empleado, fechaEmision }) => {
   // Si existe fecha de ingreso formateada la usa; de lo contrario, usa la fecha de emisión
   const fechaTextoContratacion = fechaIngresoTexto || fechaEmisionTexto;
   
-  function toTitleCase(texto) {
-    if (!texto) return '';
-    return String(texto)
-      .toLowerCase()
-      .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
-  }
 
   return (
     <Document>

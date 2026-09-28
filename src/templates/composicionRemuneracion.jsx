@@ -82,12 +82,19 @@ const styles = StyleSheet.create({
 export default function ComposicionRemuneracion({ empleado, montoBono, fechaEmision }) {
     const nombreEmpleado = `${empleado?.nombre || empleado?.nombres || ''} ${empleado?.apellido || empleado?.apellidos || ''
         }`.trim();
-
     const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
-      const sueldoNumero = empleado?.sueldo ? Number(empleado.sueldo).toFixed(2) : '482.00';
-      const sueldoTexto = empleado?.sueldoLetras || numeroALetras(sueldoNumero);
+    const sueldoNumero = empleado?.sueldo ? Number(empleado.sueldo).toFixed(2) : '482.00';
+    const sueldoTexto = empleado?.sueldoLetras || numeroALetras(sueldoNumero);
     const bonoTexto = numeroALetras(montoBono);
-    
+    const ciudad = toTitleCase(empleado?.ciudad);
+
+    function toTitleCase(texto) {
+        if (!texto) return '';
+        return String(texto)
+            .toLowerCase()
+            .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+    }
+
     const formatearFecha = (fechaStr) => {
         if (!fechaStr) return '';
         const [year, month, day] = fechaStr.split('-');
@@ -109,7 +116,7 @@ export default function ComposicionRemuneracion({ empleado, montoBono, fechaEmis
                 </View>
 
                 <Text style={[styles.paragraph, { textAlign: 'right', marginBottom: 20 }]}>
-                    Quito, {fechaActual}
+                    {ciudad}, {fechaActual}
                 </Text>
 
                 <View style={styles.titleContainer}>
