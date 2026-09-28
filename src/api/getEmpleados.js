@@ -22,7 +22,8 @@ function mapEmpleado(raw) {
     ciudad: cleanStr(raw.CIUD_MFEMP || raw.ciudad),
     provincia: cleanStr(raw.DSC_MFPVC || raw.provincia),
     celular: cleanStr(raw.TLFCL_MFEMP || raw.celular || raw.telefono),
-    direccion: cleanStr(raw.DIR_MFEMP || raw.direccion)
+    direccion: cleanStr(raw.DIR_MFEMP || raw.direccion),
+    ingreso: cleanStr(raw.FECING_MFEDC)
   };
 }
 

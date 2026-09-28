@@ -86,7 +86,8 @@ export default function ComposicionRemuneracion({ empleado, montoBono, fechaEmis
     const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
       const sueldoNumero = empleado?.sueldo ? Number(empleado.sueldo).toFixed(2) : '482.00';
       const sueldoTexto = empleado?.sueldoLetras || numeroALetras(sueldoNumero);
-
+    const bonoTexto = numeroALetras(montoBono);
+    
     const formatearFecha = (fechaStr) => {
         if (!fechaStr) return '';
         const [year, month, day] = fechaStr.split('-');
@@ -135,7 +136,7 @@ export default function ComposicionRemuneracion({ empleado, montoBono, fechaEmis
                 </Text>
 
                 <Text style={styles.paragraph}>
-                    Adicionalmente, se asignará un bono por concepto de <Text style={styles.bold}>“Alimentación”</Text>, el cual no es aportable y será registrado en el rol de pagos correspondiente, por un valor mensual de <Text style={styles.bold}>USD {Number(montoBono).toFixed(2)}</Text>.
+                    Adicionalmente, se asignará un bono por concepto de <Text style={styles.bold}>“Alimentación”</Text>, el cual no es aportable y será registrado en el rol de pagos correspondiente, por un valor mensual de <Text style={styles.bold}>USD {Number(montoBono).toFixed(2)} ({bonoTexto})</Text>.
                 </Text>
 
                 <Text style={styles.paragraph}>

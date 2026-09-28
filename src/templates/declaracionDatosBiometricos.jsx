@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         width: '45%',
     },
     signatureSpace: {
-        height: 45, // Espacio para la firma manuscrita
+        height: 65, // Espacio para la firma manuscrita
     },
     signatureLine: {
         width: '100%',
@@ -78,25 +78,39 @@ export const DeclaracionDatosBiometricos = ({ empleado, fechaEmision }) => {
     const apellido = empleado?.apellidos || empleado?.apellido || '';
     const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
     const cargo = empleado?.cargo || empleado?.desCargo || empleado?.nomCargo || 'Colaborador';
-    const fechaIngreso = empleado?.fechaIngreso || empleado?.fechaContratacion || '';
+    const fechaIngreso = empleado?.ingreso || empleado?.fechaContratacion || '';
+    const ciudad = toTitleCase(empleado?.ciudad);
 
+    function toTitleCase(texto) {
+        if (!texto) return '';
+        return String(texto)
+        .toLowerCase()
+        .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+    }
 
-  const obtenerPartesFecha = (fechaStr) => {
-    if (!fechaStr) return { dia: '', mes: '', anio: '' };
+    const formatearFechaTexto = (fechaStr) => {
+    if (!fechaStr) return '';
 
-    const [year, month, day] = fechaStr.split('-');
-    const fechaObj = new Date(year, month - 1, day);
+    // Limpiamos en caso de que la fecha venga con ISO string (ej: "2025-03-15T00:00:00")
+    const fechaLimpia = String(fechaStr).split('T')[0];
+    const [year, month, day] = fechaLimpia.split('-');
 
-    return {
-      dia: fechaObj.getDate(),
-      mes: fechaObj.toLocaleDateString('es-EC', { month: 'long' }),
-      anio: fechaObj.getFullYear(),
-    };
+    if (!year || !month || !day) return fechaStr; // Si ya viene en texto o formato distinto, lo devuelve tal cual
+
+    const fechaObj = new Date(Number(year), Number(month) - 1, Number(day));
+    const dia = fechaObj.getDate();
+    const mes = fechaObj.toLocaleDateString('es-EC', { month: 'long' });
+    const anio = fechaObj.getFullYear();
+
+    return `${dia} de ${mes} de ${anio}`;
   };
 
-  const { dia, mes, anio } = obtenerPartesFecha(fechaEmision);
+  // Formateamos ambas fechas
+  const fechaIngresoTexto = formatearFechaTexto(fechaIngreso);
+  const fechaEmisionTexto = formatearFechaTexto(fechaEmision);
 
-    const fechaTextoContratacion = fechaIngreso ? fechaIngreso : `${dia} de ${mes} de ${anio}`;
+  // Si existe fecha de ingreso formateada la usa; de lo contrario, usa la fecha de emisión
+  const fechaTextoContratacion = fechaIngresoTexto || fechaEmisionTexto;
 
     return (
         <Document>
@@ -163,7 +177,7 @@ export const DeclaracionDatosBiometricos = ({ empleado, fechaEmision }) => {
                 </Text>
 
                 <Text style={styles.paragraph}>
-                    Para constancia de lo expuesto suscribimos en 2 ejemplares de igual tenor y valor en la ciudad de Quito, a los {dia} días del mes de {mes} del año {anio}.
+                    Para constancia de lo expuesto suscribimos en 2 ejemplares de igual tenor y valor en la ciudad de {ciudad}, a los {fechaEmisionTexto}.
                 </Text>
 
                 {/* Sección de Firmas en 2 columnas */}

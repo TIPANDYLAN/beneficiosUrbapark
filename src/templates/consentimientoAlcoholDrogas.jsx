@@ -84,6 +84,14 @@ export const ConsentimientoAlcoholDrogas = ({ empleado, fechaEmision }) => {
   const apellido = empleado?.apellidos || empleado?.apellido || '';
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
   const cargo = empleado?.cargo || empleado?.desCargo || empleado?.nomCargo || 'Colaborador';
+  const ciudad = toTitleCase(empleado?.ciudad);
+
+  function toTitleCase(texto) {
+    if (!texto) return '';
+    return String(texto)
+      .toLowerCase()
+      .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+  }
 
   const formatearFecha = (fechaStr) => {
     if (!fechaStr) return '';
@@ -151,7 +159,7 @@ export const ConsentimientoAlcoholDrogas = ({ empleado, fechaEmision }) => {
 
         {/* Cierre y fecha */}
         <Text style={{ ...styles.paragraph, marginTop: 4 }}>
-          En constancia, firmo el presente consentimiento en la ciudad de Quito, a los <Text style={styles.bold}>___________</Text> días del mes de <Text style={styles.bold}>______________________</Text> del año <Text style={styles.bold}>________________</Text>.
+          En constancia, firmo el presente consentimiento en la ciudad de {ciudad}, a los <Text style={styles.bold}>___________</Text> días del mes de <Text style={styles.bold}>______________________</Text> del año <Text style={styles.bold}>________________</Text>.
         </Text>
 
         {/* Firma del Trabajador */}

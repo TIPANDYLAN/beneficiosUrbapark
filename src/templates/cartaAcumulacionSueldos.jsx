@@ -40,8 +40,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   signatureSection: {
-    marginTop: 50,
+    marginTop: 40,
     alignItems: 'flex-start',
+  },
+  signatureSpace: {
+    height: 80,
   },
   signatureLine: {
     width: 250,
@@ -60,7 +63,14 @@ export const CartaAcumulacionSueldos = ({ empleado, fechaEmision }) => {
   const nombre = empleado?.nombres || empleado?.nombre || '';
   const apellido = empleado?.apellidos || empleado?.apellido || '';
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
+  const ciudad = toTitleCase(empleado?.ciudad);
 
+  function toTitleCase(texto) {
+    if (!texto) return '';
+    return String(texto)
+      .toLowerCase()
+      .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+  }
 
   const obtenerPartesFecha = (fechaStr) => {
     if (!fechaStr) return { dia: '', mes: '', anio: '' };
@@ -87,7 +97,7 @@ export const CartaAcumulacionSueldos = ({ empleado, fechaEmision }) => {
 
         {/* Encabezado con fecha */}
         <Text style={styles.dateText}>
-          Quito, {dia} de {mes} de {anio}
+          {ciudad}, {dia} de {mes} de {anio}
         </Text>
 
         {/* Destinatario */}
@@ -112,6 +122,7 @@ export const CartaAcumulacionSueldos = ({ empleado, fechaEmision }) => {
           <Text style={{ marginBottom: 40, fontWeight: 'bold' }}>
             Firma:
           </Text>
+          <View style={styles.signatureSpace} />
           <View style={styles.signatureLine} />
           <Text style={styles.signatureText}>
             <Text style={styles.bold}>Nombre: </Text>

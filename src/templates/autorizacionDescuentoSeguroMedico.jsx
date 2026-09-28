@@ -45,8 +45,11 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
   },
   signatureSection: {
-    marginTop: 60,
+    marginTop: 40,
     alignItems: 'flex-start',
+  },
+  signatureSpace: {
+    height: 80,
   },
   signatureLine: {
     width: 250,
@@ -66,7 +69,14 @@ export const AutorizacionSeguroMedico = ({ empleado, fechaEmision }) => {
   const apellido = empleado?.apellidos || empleado?.apellido || '';
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
   const cargo = empleado?.cargo || empleado?.desCargo || empleado?.nomCargo || 'Colaborador';
+  const ciudad = toTitleCase(empleado?.ciudad);
 
+  function toTitleCase(texto) {
+    if (!texto) return '';
+    return String(texto)
+      .toLowerCase()
+      .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+  }
 
   const obtenerPartesFecha = (fechaStr) => {
     if (!fechaStr) return { dia: '', mes: '', anio: '' };
@@ -111,13 +121,14 @@ export const AutorizacionSeguroMedico = ({ empleado, fechaEmision }) => {
         </Text>
 
         <Text style={styles.paragraph}>
-          En constancia de conformidad, firmo la presente en Quito, a los {dia} días del mes de {mes} de {anio}.
+          En constancia de conformidad, firmo la presente en {ciudad}, a los {dia} días del mes de {mes} de {anio}.
         </Text>
 
         <View style={styles.signatureSection}>
           <Text style={{ marginBottom: 40, fontWeight: 'bold' }}>
             Firma del colaborador/a
           </Text>
+          <View style={styles.signatureSpace} />
           <View style={styles.signatureLine} />
           <Text style={styles.signatureText}>
             <Text style={styles.bold}>Nombre completo: </Text>

@@ -85,6 +85,14 @@ export const ActaReglamentoInterno = ({ empleado, fechaEmision }) => {
   const apellido = empleado?.apellidos || empleado?.apellido || '';
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
   const cargo = empleado?.cargo || empleado?.desCargo || empleado?.nomCargo || 'Colaborador';
+  const ciudad = toTitleCase(empleado?.ciudad);
+
+  function toTitleCase(texto) {
+    if (!texto) return '';
+    return String(texto)
+      .toLowerCase()
+      .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+  }
 
   const obtenerPartesFecha = (fechaStr) => {
     if (!fechaStr) return { dia: '', mes: '', anio: '' };
@@ -119,7 +127,7 @@ export const ActaReglamentoInterno = ({ empleado, fechaEmision }) => {
 
         {/* Fecha y Comparecencia */}
         <Text style={styles.paragraph}>
-          En la ciudad de Quito, a los <Text style={styles.bold}>{dia}</Text> días del mes de <Text style={styles.bold}>{mes}</Text> del año <Text style={styles.bold}>{anio}</Text>, comparece el/la trabajador/a cuyos datos se detallan a continuación:
+          En la ciudad de {ciudad}, a los <Text style={styles.bold}>{dia}</Text> días del mes de <Text style={styles.bold}>{mes}</Text> del año <Text style={styles.bold}>{anio}</Text>, comparece el/la trabajador/a cuyos datos se detallan a continuación:
         </Text>
 
         {/* Detalle del Trabajador */}

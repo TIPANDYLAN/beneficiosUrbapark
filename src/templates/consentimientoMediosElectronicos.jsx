@@ -53,8 +53,11 @@ const styles = StyleSheet.create({
     marginVertical: 6,
   },
   signatureSection: {
-    marginTop: 40,
+    marginTop: 10,
     alignItems: 'flex-start',
+  },
+  signatureSpace: {
+    height: 50,
   },
   signatureLine: {
     width: 250,
@@ -74,7 +77,14 @@ export const ConsentimientoMediosElectronicos = ({ empleado, fechaEmision }) => 
   const apellido = empleado?.apellidos || empleado?.apellido || '';
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
   const correo = empleado?.correo || empleado?.email || empleado?.correoElectronico || '';
+  const ciudad = toTitleCase(empleado?.ciudad);
 
+  function toTitleCase(texto) {
+    if (!texto) return '';
+    return String(texto)
+      .toLowerCase()
+      .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+  }
 
   const obtenerPartesFecha = (fechaStr) => {
     if (!fechaStr) return { dia: '', mes: '', anio: '' };
@@ -145,7 +155,7 @@ export const ConsentimientoMediosElectronicos = ({ empleado, fechaEmision }) => 
           </Text>
           <Text style={styles.fieldRow}>
             <Text style={styles.bold}>Lugar y Fecha: </Text>
-            Quito, {dia} de {mes} de {anio}
+            {ciudad}, {dia} de {mes} de {anio}
           </Text>
         </View>
 
@@ -154,6 +164,7 @@ export const ConsentimientoMediosElectronicos = ({ empleado, fechaEmision }) => 
           <Text style={{ marginBottom: 40, fontWeight: 'bold' }}>
             Firma del Trabajador:
           </Text>
+          <View style={styles.signatureSpace} />
           <View style={styles.signatureLine} />
           <Text style={styles.signatureText}>
             <Text style={styles.bold}>Nombre Completo: </Text>

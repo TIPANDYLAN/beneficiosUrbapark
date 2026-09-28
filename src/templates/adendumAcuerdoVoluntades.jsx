@@ -86,25 +86,40 @@ export const AdendumAcuerdoVoluntades = ({ empleado, fechaEmision }) => {
   const apellido = empleado?.apellidos || empleado?.apellido || '';
   const cedula = empleado?.cedula || empleado?.numCedula || empleado?.identificacion || '';
   const cargo = empleado?.cargo || empleado?.desCargo || empleado?.nomCargo || 'Colaborador';
-  const fechaIngreso = empleado?.fechaIngreso || empleado?.fechaContratacion || '';
+  const fechaIngreso = empleado?.ingreso || empleado?.fechaContratacion || '';
+  const ciudad = toTitleCase(empleado?.ciudad);
 
+  function toTitleCase(texto) {
+    if (!texto) return '';
+    return String(texto)
+      .toLowerCase()
+      .replace(/(^|\s)\S/g, (l) => l.toUpperCase());
+  }
 
-  const obtenerPartesFecha = (fechaStr) => {
-    if (!fechaStr) return { dia: '', mes: '', anio: '' };
+  // Helper para convertir cualquier fecha "YYYY-MM-DD" a texto ("DD de MES de AAAA")
+  const formatearFechaTexto = (fechaStr) => {
+    if (!fechaStr) return '';
 
-    const [year, month, day] = fechaStr.split('-');
-    const fechaObj = new Date(year, month - 1, day);
+    // Limpiamos en caso de que la fecha venga con ISO string (ej: "2025-03-15T00:00:00")
+    const fechaLimpia = String(fechaStr).split('T')[0];
+    const [year, month, day] = fechaLimpia.split('-');
 
-    return {
-      dia: fechaObj.getDate(),
-      mes: fechaObj.toLocaleDateString('es-EC', { month: 'long' }),
-      anio: fechaObj.getFullYear(),
-    };
+    if (!year || !month || !day) return fechaStr; // Si ya viene en texto o formato distinto, lo devuelve tal cual
+
+    const fechaObj = new Date(Number(year), Number(month) - 1, Number(day));
+    const dia = fechaObj.getDate();
+    const mes = fechaObj.toLocaleDateString('es-EC', { month: 'long' });
+    const anio = fechaObj.getFullYear();
+
+    return `${dia} de ${mes} de ${anio}`;
   };
 
-  const { dia, mes, anio } = obtenerPartesFecha(fechaEmision);
+  // Formateamos ambas fechas
+  const fechaIngresoTexto = formatearFechaTexto(fechaIngreso);
+  const fechaEmisionTexto = formatearFechaTexto(fechaEmision);
 
-  const fechaTextoContratacion = fechaIngreso ? fechaIngreso : `${dia} de ${mes} de ${anio}`;
+  // Si existe fecha de ingreso formateada la usa; de lo contrario, usa la fecha de emisión
+  const fechaTextoContratacion = fechaIngresoTexto || fechaEmisionTexto;
 
   return (
     <Document>
@@ -121,7 +136,7 @@ export const AdendumAcuerdoVoluntades = ({ empleado, fechaEmision }) => {
 
         {/* Comparecientes */}
         <Text style={styles.paragraph}>
-          En la ciudad de Quito, a los <Text style={styles.bold}>{dia}</Text> días del mes de <Text style={styles.bold}>{mes}</Text> del <Text style={styles.bold}>{anio}</Text>, comparecen por una parte la compañía ESTACIONAMIENTOS URBANOS URBAPARK S.A., representada por BURBANO DE LARA CORREA PABLO ENRIQUE, en su calidad de Gerente General y, a quien en adelante se le denominará <Text style={styles.italic}>"EMPLEADOR"</Text>; y, por otra parte, el señor <Text style={styles.bold}>{nombre} {apellido}</Text>, con cédula de ciudadanía Nro. <Text style={styles.bold}>{cedula}</Text> en adelante <Text style={styles.italic}>"TRABAJADOR"</Text>, el presente acuerdo transaccional lo suscriben de mutuo acuerdo con el fin de establecer la compensación de horas laborales.
+          En la ciudad de {ciudad}, a los <Text style={styles.bold}>{fechaEmisionTexto}</Text>, comparecen por una parte la compañía ESTACIONAMIENTOS URBANOS URBAPARK S.A., representada por BURBANO DE LARA CORREA PABLO ENRIQUE, en su calidad de Gerente General y, a quien en adelante se le denominará <Text style={styles.italic}>"EMPLEADOR"</Text>; y, por otra parte, el señor <Text style={styles.bold}>{nombre} {apellido}</Text>, con cédula de ciudadanía Nro. <Text style={styles.bold}>{cedula}</Text> en adelante <Text style={styles.italic}>"TRABAJADOR"</Text>, el presente acuerdo transaccional lo suscriben de mutuo acuerdo con el fin de establecer la compensación de horas laborales.
         </Text>
 
         {/* Cláusula Primera */}
