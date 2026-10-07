@@ -47,7 +47,7 @@ export default function FacturaDistribuida() {
               id="monto"
               type="number"
               min="0"
-              step="0.01"
+              step="1"
               value={montoTotal}
               onChange={(e) => setMontoTotal(Number(e.target.value))}
             />

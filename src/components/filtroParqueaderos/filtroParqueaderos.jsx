@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './FiltroParqueaderos.css';
 
 export default function FiltroParqueaderos({ onSeleccionarModo }) {
-  const [modo, setModo] = useState('SIERRA'); // 'COSTA' | 'SIERRA' | 'CUSTOM'
+  const [modo, setModo] = useState('TODOS');
 
   const handleSeleccionar = (nuevoModo) => {
     setModo(nuevoModo);
@@ -13,6 +13,13 @@ export default function FiltroParqueaderos({ onSeleccionarModo }) {
 
   return (
     <div className="filtro-segmented-bar">
+      <button
+        type="button"
+        className={`segmented-btn ${modo === 'TODOS' ? 'active' : ''}`}
+        onClick={() => handleSeleccionar('TODOS')}
+      >
+        Todos
+      </button>
       <button
         type="button"
         className={`segmented-btn ${modo === 'COSTA' ? 'active' : ''}`}
