@@ -1,0 +1,44 @@
+/* Contenedor de la barra segmentada */
+.filtro-segmented-bar {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-bg-input, #f3f4f6);
+  padding: 4px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--color-border-input, #e5e7eb);
+  gap: 4px;
+  min-height: 50px;
+  box-sizing: border-box;
+}
+
+/* Botón individual de la barra */
+.segmented-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 18px;
+  border-radius: calc(var(--radius-md, 8px) - 2px);
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-main, #4b5563);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+  height: 100%;
+}
+
+.segmented-btn.active:hover {
+   background-color: var(--color-secondary-hover);
+}
+
+.segmented-btn:hover:not(.active) {
+  color: var(--color-secondary, #362676);
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Estado seleccionado */
+.segmented-btn.active {
+  background-color: var(--color-secondary, #ffffff);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(54, 38, 118, 0.12);
+}
