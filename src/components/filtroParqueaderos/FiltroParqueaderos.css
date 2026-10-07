@@ -1,3 +1,13 @@
+/* ==========================================================================
+   FiltroParqueaderos.css
+   ========================================================================== */
+
+/* Contenedor relativo principal */
+.filtro-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
 /* Contenedor de la barra segmentada */
 .filtro-segmented-bar {
   display: inline-flex;
@@ -28,7 +38,7 @@
 }
 
 .segmented-btn.active:hover {
-   background-color: var(--color-secondary-hover);
+  background-color: var(--color-secondary-hover);
 }
 
 .segmented-btn:hover:not(.active) {
@@ -38,7 +48,173 @@
 
 /* Estado seleccionado */
 .segmented-btn.active {
-  background-color: var(--color-secondary, #ffffff);
+  background-color: var(--color-secondary, #362676);
   color: #ffffff;
   box-shadow: 0 2px 6px rgba(54, 38, 118, 0.12);
+}
+
+/* ==========================================================================
+   Modal / Popover Personalizado (Posicionado a la derecha)
+   ========================================================================== */
+
+.popover-custom-content {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 0;
+  right: auto;
+  bottom: auto;
+  z-index: 1000;
+  
+  width: 310px;
+  background-color: var(--color-bg-body, #ffffff);
+  border: 1.5px solid #d2d2d2;
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 10px 25px -5px rgba(54, 38, 118, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  padding: 14px;
+  animation: popoverFadeRight 0.15s ease-out;
+}
+
+@keyframes popoverFadeRight {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Header del Modal */
+.popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+}
+
+.popover-header h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: black;
+}
+
+.select-all-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Lista Scrollable de Checkboxes */
+.custom-lista-parqueaderos {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 4px;
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
+  user-select: none;
+  color: rgb(72, 72, 72);
+}
+
+.checkbox-option:hover {
+  background-color: var(--color-bg-input, #f3f4f6);
+}
+
+/* Evitamos que el checkbox se deforme cuando el texto es largo */
+.checkbox-option input[type="checkbox"],
+.select-all-label input[type="checkbox"] {
+appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--color-border-input, #d1d5db);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.checkbox-option input[type="checkbox"]:checked,
+.select-all-label input[type="checkbox"]:checked {
+  background-color: var(--color-primary, #ff6b00);
+  border-color: var(--color-primary, #ff6b00);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+  background-size: 12px 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.select-all-label {
+    margin-top: -5px;
+    margin-bottom: 5px;
+}
+
+.p-nombre {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+.sin-parqueaderos {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-align: center;
+  margin: 12px 0;
+}
+
+/* Footer del Modal */
+.popover-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border-input, #e5e7eb);
+}
+
+.contador-seleccionados {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.btn-aplicar {
+  background-color: var(--color-primary, #ff6b00);
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: var(--radius-md, 6px);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-aplicar:hover {
+  background-color: var(--color-primary-hover, #e05e00);
+}
+
+.btn-aplicar:active {
+  transform: scale(0.97);
 }

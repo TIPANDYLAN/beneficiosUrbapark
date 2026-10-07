@@ -34,7 +34,7 @@ export default function BannerLayout() {
                 to="/factura-distribuida"
                 className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
               >
-                Ditribuir Facturas
+                Distribuir Facturas
               </NavLink>
             </nav>
           </header>
