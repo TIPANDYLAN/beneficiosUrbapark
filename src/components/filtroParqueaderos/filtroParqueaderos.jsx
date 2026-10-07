@@ -10,6 +10,7 @@ export default function FiltroParqueaderos({
   const [isCustomOpen, setIsCustomOpen] = useState(false);
   const [codigosSeleccionados, setCodigosSeleccionados] = useState([]);
   const popoverRef = useRef(null);
+  const [busqueda, setBusqueda] = useState('');
 
   // Inicializar seleccionando todos los parqueaderos al cargar la lista
   useEffect(() => {
@@ -32,6 +33,12 @@ export default function FiltroParqueaderos({
     }
   };
 
+  // Filtrar lista según el texto ingresado
+  const parqueaderosFiltrados = parqueaderos.filter((p) =>
+    p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+    (p.codigo && p.codigo.toLowerCase().includes(busqueda.toLowerCase()))
+  );
+
   // Checkbox individual
   const handleToggleCodigo = (codigo) => {
     setCodigosSeleccionados((prev) =>
@@ -41,12 +48,17 @@ export default function FiltroParqueaderos({
     );
   };
 
-  // Checkbox 'Seleccionar Todos'
+  // Checkbox 'Seleccionar Todos' (Aplica sobre los elementos actualmente visibles en la búsqueda)
   const handleToggleTodos = (e) => {
+    const codigosVisibles = parqueaderosFiltrados.map((p) => p.codigo);
     if (e.target.checked) {
-      setCodigosSeleccionados(parqueaderos.map((p) => p.codigo));
+      setCodigosSeleccionados((prev) =>
+        Array.from(new Set([...prev, ...codigosVisibles]))
+      );
     } else {
-      setCodigosSeleccionados([]);
+      setCodigosSeleccionados((prev) =>
+        prev.filter((code) => !codigosVisibles.includes(code))
+      );
     }
   };
 
@@ -58,8 +70,8 @@ export default function FiltroParqueaderos({
   };
 
   const todosSeleccionados =
-    parqueaderos.length > 0 &&
-    codigosSeleccionados.length === parqueaderos.length;
+    parqueaderosFiltrados.length > 0 &&
+    parqueaderosFiltrados.every((p) => codigosSeleccionados.includes(p.codigo));
 
   return (
     <div className="filtro-wrapper" ref={popoverRef}>
@@ -112,9 +124,20 @@ export default function FiltroParqueaderos({
             </label>
           </div>
 
+          <div className="popover-search-container">
+            <input
+              type="text"
+              className="input-search-parqueadero"
+              placeholder="Buscar parqueadero..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+            />
+          </div>
+
+          {/* Renderizado ajustado a parqueaderosFiltrados */}
           <div className="custom-lista-parqueaderos">
-            {parqueaderos.length > 0 ? (
-              parqueaderos.map((p) => {
+            {parqueaderosFiltrados.length > 0 ? (
+              parqueaderosFiltrados.map((p) => {
                 const isChecked = codigosSeleccionados.includes(p.codigo);
                 return (
                   <label key={p.codigo} className="checkbox-option">
@@ -128,7 +151,7 @@ export default function FiltroParqueaderos({
                 );
               })
             ) : (
-              <p className="sin-parqueaderos">No hay parqueaderos</p>
+              <p className="sin-parqueaderos">No se encontraron resultados</p>
             )}
           </div>
 
