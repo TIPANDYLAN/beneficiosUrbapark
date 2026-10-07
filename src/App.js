@@ -5,12 +5,13 @@ import BannerLayout from './layouts/bannerLayout.jsx';
 import HomePage from './pages/homePage/homePage.jsx';
 import Contratacion from './pages/contratacion/contratacion.jsx';
 import { obtenerEmpleados } from './api/getEmpleados.js';
+import FacturaDistribuida from './pages/facturaDistribuida/facturaDistribuida.jsx';
 import './index.css'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <BannerLayout />, // 👈 Todas las rutas hijas tendrán el banner izquierdo
+    element: <BannerLayout />,
     children: [
       {
         index: true,
@@ -25,11 +26,15 @@ const router = createBrowserRouter([
           };
         },
       },
+      {
+        path: '/factura-distribuida',
+        element: <FacturaDistribuida/>,
+      }
     ],
   },
   {
-    path: '/otra-pagina',
-    element: <div>Página sin banner lateral</div>,
+    path: '/otra',
+    element: <p>Pagina fuera de las creadas</p> ,
   },
   {
     path: '*',

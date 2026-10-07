@@ -25,16 +25,16 @@ export default function BannerLayout() {
           <header className="main-header">
             <nav className="header-nav">
               <NavLink 
-                to="/declaracion-consentimiento" 
-                className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-              >
-                Ditribuir Facturas
-              </NavLink>
-              <NavLink 
                 to="/contratacion" 
                 className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
               >
                 Contratación
+              </NavLink>
+              <NavLink 
+                to="/factura-distribuida"
+                className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+              >
+                Ditribuir Facturas
               </NavLink>
             </nav>
           </header>
