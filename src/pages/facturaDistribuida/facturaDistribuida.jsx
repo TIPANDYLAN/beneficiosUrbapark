@@ -45,20 +45,66 @@ export default function FacturaDistribuida() {
         [empleadosData]
     );
 
-    console.log(
-        'EMPLEADOS POR CENTRO DE COSTO:',
-        empleadosPorCentroCosto
-    );
+    const obtenerEmpleadosConsiderados = () => {
+        if (modoFiltro === 'TODOS') {
+            return empleadosData;
+        }
 
-    console.log(
-        'RESUMEN CENTROS:',
-        Object.entries(empleadosPorCentroCosto).map(
-            ([centroCosto, datos]) => ({
-                centroCosto,
-                cantidad: datos.cantidad,
-            })
-        )
-    );
+        if (modoFiltro === 'COSTA') {
+            return empleadosData.filter(
+                (empleado) =>
+                    empleado.ciudad?.trim().toUpperCase() === 'GUAYAQUIL'
+            );
+        }
+
+        if (modoFiltro === 'SIERRA') {
+            return empleadosData.filter((empleado) => {
+                const ciudad = empleado.ciudad?.trim().toUpperCase();
+
+                return ciudad === 'QUITO' || ciudad === 'AMBATO';
+            });
+        }
+
+        if (modoFiltro === 'CUSTOM') {
+            const ciudadesSeleccionadas = new Set(
+                parqueaderos
+                    .filter((p) =>
+                        parqueaderosSeleccionados.includes(p.codigo)
+                    )
+                    .map((p) => p.region?.trim().toUpperCase())
+                    .filter(Boolean)
+            );
+
+            return empleadosData.filter((empleado) =>
+                ciudadesSeleccionadas.has(
+                    empleado.ciudad?.trim().toUpperCase()
+                )
+            );
+        }
+
+        return empleadosData;
+    };
+
+    const empleadosConsiderados = obtenerEmpleadosConsiderados();
+
+    const cantidadEmpleadosConsiderados = empleadosConsiderados.length;
+
+    const valorBase =
+        cantidadEmpleadosConsiderados > 0 && parseFloat(montoTotal) > 0
+            ? parseFloat(montoTotal) / cantidadEmpleadosConsiderados
+            : 0;
+
+            console.log('MODO FILTRO:', modoFiltro);
+
+console.log(
+    'EMPLEADOS CONSIDERADOS:',
+    empleadosConsiderados.length
+);
+
+console.log(
+    'VALOR BASE:',
+    valorBase
+);
 
     const parqueaderos = useMemo(() => {
         const mapaCatalogo = new Map(
