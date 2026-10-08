@@ -20,7 +20,6 @@ export async function getDistribucion() {
 
     if (!Array.isArray(data)) return [];
 
-    // Formateamos los campos para uso directo en JavaScript
     return data.map((item) => ({
       nombre: item.name,
       codigo: item.cost_center_code,

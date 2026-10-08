@@ -2,3 +2,69 @@
     cursor: auto !important;
     margin-top: 10px;
 }
+
+.btn-calcular{
+    cursor: pointer !important;
+    margin-top: 10px;
+}
+
+.factura-container {
+    display: flex;
+    gap: 40px;
+}
+
+.factura-main {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.resultados-section {
+  flex: 1; 
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  margin-right: 20px;
+}
+
+.tabla-resultados {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-resultados th,
+.tabla-resultados td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabla-resultados th {
+  position: sticky;
+  top: 0;
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #1e293b;
+  z-index: 1;
+}
+
+.tabla-resultados td {
+    padding: 15px;
+    font-size: 14px;
+}
+
+/* Adaptabilidad para pantallas pequeñas */
+@media (max-width: 900px) {
+  .factura-main {
+    flex-direction: column;
+  }
+
+  .controles-bar {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
