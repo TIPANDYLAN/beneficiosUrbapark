@@ -23,7 +23,8 @@ function mapEmpleado(raw) {
     provincia: cleanStr(raw.DSC_MFPVC || raw.provincia),
     celular: cleanStr(raw.TLFCL_MFEMP || raw.celular || raw.telefono),
     direccion: cleanStr(raw.DIR_MFEMP || raw.direccion),
-    ingreso: cleanStr(raw.FECING_MFEDC)
+    ingreso: cleanStr(raw.FECING_MFEDC),
+    centroCosto: cleanStr(raw.DSC_MFCC)
   };
 }
 
