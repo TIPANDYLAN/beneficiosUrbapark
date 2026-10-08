@@ -18,6 +18,48 @@ export default function FacturaDistribuida() {
 
     const normalizarCodigo = (code) => String(code || '').trim();
 
+    const agruparEmpleadosPorCentroCosto = (empleados) => {
+        return empleados.reduce((grupos, empleado) => {
+            const centroCosto = empleado.centroCosto?.trim();
+
+            if (!centroCosto) {
+                return grupos;
+            }
+
+            if (!grupos[centroCosto]) {
+                grupos[centroCosto] = {
+                    empleados: [],
+                    cantidad: 0,
+                };
+            }
+
+            grupos[centroCosto].empleados.push(empleado);
+            grupos[centroCosto].cantidad += 1;
+
+            return grupos;
+        }, {});
+    };
+
+    const empleadosPorCentroCosto = useMemo(
+        () => agruparEmpleadosPorCentroCosto(empleadosData),
+        [empleadosData]
+    );
+
+    console.log(
+        'EMPLEADOS POR CENTRO DE COSTO:',
+        empleadosPorCentroCosto
+    );
+
+    console.log(
+        'RESUMEN CENTROS:',
+        Object.entries(empleadosPorCentroCosto).map(
+            ([centroCosto, datos]) => ({
+                centroCosto,
+                cantidad: datos.cantidad,
+            })
+        )
+    );
+
     const parqueaderos = useMemo(() => {
         const mapaCatalogo = new Map(
             parqueaderosData.map((p) => [
