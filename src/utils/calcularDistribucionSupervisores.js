@@ -1,6 +1,5 @@
 /**
- * Calcula la distribución del centro de costo "Administración-Supervisores" (0110191)
- * con respaldos de seguridad para asegurar que siempre renderice datos en la tabla.
+ * Calcula la distribución de Supervisores validando con codCosto === '0110191'.
  */
 export const calcularDistribucionSupervisores = ({
     empleados,
@@ -11,7 +10,6 @@ export const calcularDistribucionSupervisores = ({
 }) => {
     const normalizarTexto = (str) => String(str ?? '').trim().toUpperCase();
 
-    // 1. Filtrar parqueaderos según el modo de filtro activo
     let parqueaderosFiltrados = parqueaderosConTemplate;
     if (modoFiltro === 'COSTA') {
         parqueaderosFiltrados = parqueaderosConTemplate.filter((p) => {
@@ -29,13 +27,10 @@ export const calcularDistribucionSupervisores = ({
         );
     }
 
-    // 🛡️ RESPALDO DE SEGURIDAD: Si por diferencias de nombres de región el filtro devuelve 0,
-    // usamos todos los parqueaderos de la plantilla para garantizar que la tabla muestre los montos.
     if (parqueaderosFiltrados.length === 0) {
         parqueaderosFiltrados = parqueaderosConTemplate;
     }
 
-    // 2. Sumar los porcentajes base de los parqueaderos filtrados para la Regla de Tres
     const sumaPorcentajesBase = parqueaderosFiltrados.reduce(
         (acc, p) => acc + (Number(p.porcentajeBase) || 0),
         0
@@ -45,7 +40,7 @@ export const calcularDistribucionSupervisores = ({
         return { resultados: [], totalSupervisores: 0, montoSupervisores: 0 };
     }
 
-    // 3. Filtrar empleados supervisores (COD_MFCC = 0110191)
+    // Filtrar supervisores usando codCosto
     const supervisoresFiltrados = empleados.filter((e) => {
         const esSupervisor = String(e.codCosto ?? '').trim() === '0110191';
         if (!esSupervisor) return false;
@@ -57,7 +52,7 @@ export const calcularDistribucionSupervisores = ({
             const ciudadesValidas = new Set(parqueaderosFiltrados.map((p) => normalizarTexto(p.region)));
             return ciudadesValidas.has(ciudad) || ciudadesValidas.size === 0;
         }
-        return true; // TODOS
+        return true;
     });
 
     const totalSupervisores = supervisoresFiltrados.length;
@@ -68,12 +63,9 @@ export const calcularDistribucionSupervisores = ({
         return { resultados: [], totalSupervisores, montoSupervisores };
     }
 
-    // 4. Distribuir el monto usando porcentajes reajustados por Regla de Tres
     let sumaMontosAsignados = 0;
     const resultadosPreliminares = parqueaderosFiltrados.map((p) => {
         const porcentajeBase = Number(p.porcentajeBase) || 0;
-        
-        // Regla de Tres: (Porcentaje Base / Suma Total Base) * 100
         const porcentajeAjustado = sumaPorcentajesBase > 0 
             ? (porcentajeBase / sumaPorcentajesBase) * 100 
             : (100 / parqueaderosFiltrados.length);
@@ -92,7 +84,6 @@ export const calcularDistribucionSupervisores = ({
         };
     });
 
-    // 5. Ajuste final de centavos para garantizar cuadre exacto con el monto total de supervisores
     const diferenciaCentavos = Number((montoSupervisores - sumaMontosAsignados).toFixed(2));
     if (diferenciaCentavos !== 0 && resultadosPreliminares.length > 0) {
         let indexMayor = 0;

@@ -1,41 +1,46 @@
 /**
- * Calcula la distribución por centro de costo para empleados normales 
- * utilizando el valor base global y aplicando ajuste de centavos.
+ * Calcula la distribución por centro de costo usando codCosto y centroCosto.
  */
 export const calcularDistribucionCentrosCosto = ({ empleadosNormales, valorBase }) => {
     const base = Number(valorBase) || 0;
     if (!empleadosNormales || empleadosNormales.length === 0 || base <= 0) return [];
 
-    // Agrupar empleados normales por centro de costo
+    // Agrupar empleados normales por codCosto y conservar su nombre (centroCosto)
     const grupos = empleadosNormales.reduce((acc, empleado) => {
-        const centroCosto = empleado.centroCosto?.trim();
-        if (!centroCosto) return acc;
+        const codigoCosto = String(empleado.codCosto ?? '').trim();
+        const nombreCentro = String(empleado.centroCosto ?? '').trim() || codigoCosto;
+        
+        if (!codigoCosto) return acc;
 
-        if (!acc[centroCosto]) {
-            acc[centroCosto] = 0;
+        if (!acc[codigoCosto]) {
+            acc[codigoCosto] = {
+                codigoCosto,
+                centroCosto: nombreCentro,
+                cantidad: 0,
+            };
         }
-        acc[centroCosto] += 1;
+        acc[codigoCosto].cantidad += 1;
         return acc;
     }, {});
 
-    const entradas = Object.entries(grupos);
+    const entradas = Object.values(grupos);
     if (entradas.length === 0) return [];
 
     let sumaMontosCalculados = 0;
 
-    const distribucionPreliminar = entradas.map(([centroCosto, cantidadEmpleados]) => {
-        const montoAsignado = Number((cantidadEmpleados * base).toFixed(2));
+    const distribucionPreliminar = entradas.map((grupo) => {
+        const montoAsignado = Number((grupo.cantidad * base).toFixed(2));
         sumaMontosCalculados += montoAsignado;
 
         return {
-            centroCosto,
-            cantidadEmpleados,
+            codigoCosto: grupo.codigoCosto,
+            centroCosto: grupo.centroCosto,
+            cantidadEmpleados: grupo.cantidad,
             valorBase: base,
             montoAsignado,
         };
     });
 
-    // Total esperado exacto para los centros normales basado en el valor base global
     const totalEsperadoNormales = empleadosNormales.reduce(
         (acc, _) => acc + base,
         0
