@@ -10,6 +10,8 @@ export default function FacturaDistribuida() {
         empleadosData,
         parqueaderosData,
         plantillaDistribucionData,
+        gruposSupervision,          // 👈 1. Recibido del loader
+        relacionEmpleadosGrupos,    // 👈 1. Recibido del loader
     } = useLoaderData();
 
     const [montoTotal, setMontoTotal] = useState('');
@@ -33,7 +35,7 @@ export default function FacturaDistribuida() {
             ])
         );
 
-        return plantillaDistribucionData.map((item) => {
+        const listaTemplate = plantillaDistribucionData.map((item) => {
             const codigo = normalizarCodigo(item.codigo || item.cost_center_code);
             const infoCatalogo = mapaCatalogo.get(codigo);
 
@@ -52,42 +54,110 @@ export default function FacturaDistribuida() {
                 porcentajeBase: Number(item.porcentajeBase ?? item.percentage ?? 0),
             };
         });
+
+        // Asegurar que Administración-Supervisores esté disponible en la lista de opciones personalizadas
+        const existeSupervisor = listaTemplate.some((p) => normalizarCodigo(p.codigo) === '0110191');
+        if (!existeSupervisor) {
+            listaTemplate.push({
+                codigo: '0110191',
+                nombre: 'ADMINISTRACION-SUPERVISORES',
+                region: 'NACIONAL',
+                porcentajeBase: 0,
+            });
+        }
+
+        return listaTemplate;
     }, [parqueaderosData, plantillaDistribucionData]);
 
-    // 1. Empleados filtrados por región (INCLUYE supervisores para el conteo global y valor base)
-    const empleadosPorRegion = useMemo(() => {
+    // Parqueaderos normales seleccionados (excluyendo 0110191)
+    const parqueaderosNormalesSeleccionados = useMemo(() => {
+        return parqueaderosSeleccionados.filter(
+            (c) => normalizarCodigo(c) !== '0110191'
+        );
+    }, [parqueaderosSeleccionados]);
+
+    // Bandera para saber si se deben incluir supervisores en modo CUSTOM según el check
+    const incluirSupervisores = useMemo(() => {
+        if (modoFiltro !== 'CUSTOM') return true;
+        return parqueaderosSeleccionados.some(
+            (c) => normalizarCodigo(c) === '0110191'
+        );
+    }, [modoFiltro, parqueaderosSeleccionados]);
+
+    // 1. Empleados normales
+    const empleadosParaCentrosNormales = useMemo(() => {
+        const noSupervisores = empleadosData.filter(
+            (e) => String(e.codCosto ?? '').trim() !== '0110191'
+        );
+
         if (modoFiltro === 'TODOS') {
-            return empleadosData;
+            return noSupervisores;
         }
 
         if (modoFiltro === 'COSTA') {
-            return empleadosData.filter(
-                (empleado) => normalizarTexto(empleado.ciudad) === 'GUAYAQUIL'
+            return noSupervisores.filter(
+                (e) => normalizarTexto(e.ciudad) === 'GUAYAQUIL'
             );
         }
 
         if (modoFiltro === 'SIERRA') {
-            return empleadosData.filter((empleado) => {
-                const ciudad = normalizarTexto(empleado.ciudad);
+            return noSupervisores.filter((e) => {
+                const ciudad = normalizarTexto(e.ciudad);
                 return ciudad === 'QUITO' || ciudad === 'AMBATO';
             });
         }
 
         if (modoFiltro === 'CUSTOM') {
-            const ciudadesSeleccionadas = new Set(
-                parqueaderos
-                    .filter((p) => parqueaderosSeleccionados.includes(p.codigo))
-                    .map((p) => normalizarTexto(p.region))
-                    .filter((region) => ['QUITO', 'AMBATO', 'GUAYAQUIL'].includes(region))
-            );
-
-            return empleadosData.filter((empleado) =>
-                ciudadesSeleccionadas.has(normalizarTexto(empleado.ciudad))
+            const setSeleccionados = new Set(parqueaderosNormalesSeleccionados.map((c) => normalizarCodigo(c)));
+            return noSupervisores.filter((e) =>
+                setSeleccionados.has(normalizarCodigo(e.codCosto))
             );
         }
 
-        return empleadosData;
-    }, [empleadosData, modoFiltro, parqueaderos, parqueaderosSeleccionados]);
+        return noSupervisores;
+    }, [empleadosData, modoFiltro, parqueaderosNormalesSeleccionados]);
+
+    const empleadosSupervisoresConsiderados = useMemo(() => {
+        if (!incluirSupervisores) return [];
+
+        const soloSupervisores = empleadosData.filter(
+            (e) => String(e.codCosto ?? '').trim() === '0110191'
+        );
+
+        if (modoFiltro === 'TODOS') {
+            return soloSupervisores;
+        }
+
+        if (modoFiltro === 'COSTA') {
+            return soloSupervisores.filter(
+                (e) => normalizarTexto(e.ciudad) === 'GUAYAQUIL'
+            );
+        }
+
+        if (modoFiltro === 'SIERRA') {
+            return soloSupervisores.filter((e) => {
+                const ciudad = normalizarTexto(e.ciudad);
+                return ciudad === 'QUITO' || ciudad === 'AMBATO';
+            });
+        }
+
+        if (modoFiltro === 'CUSTOM') {
+            const regionesSeleccionadas = new Set(
+                parqueaderos
+                    .filter((p) => parqueaderosNormalesSeleccionados.includes(p.codigo))
+                    .map((p) => normalizarTexto(p.region))
+            );
+            return soloSupervisores.filter((e) =>
+                regionesSeleccionadas.has(normalizarTexto(e.ciudad))
+            );
+        }
+
+        return soloSupervisores;
+    }, [empleadosData, modoFiltro, incluirSupervisores, parqueaderosNormalesSeleccionados, parqueaderos]);
+
+    const empleadosPorRegion = useMemo(() => {
+        return [...empleadosParaCentrosNormales, ...empleadosSupervisoresConsiderados];
+    }, [empleadosParaCentrosNormales, empleadosSupervisoresConsiderados]);
 
     const cantidadEmpleadosConsiderados = empleadosPorRegion.length;
     const montoNumerico = Number(montoTotal);
@@ -96,13 +166,6 @@ export default function FacturaDistribuida() {
         cantidadEmpleadosConsiderados > 0 && Number.isFinite(montoNumerico) && montoNumerico > 0
             ? montoNumerico / cantidadEmpleadosConsiderados
             : 0;
-
-    // 2. Empleados para centros normales (EXCLUYE supervisores con codCosto === '0110191')
-    const empleadosParaCentrosNormales = useMemo(() => {
-        return empleadosPorRegion.filter(
-            (empleado) => String(empleado.codCosto ?? '').trim() !== '0110191'
-        );
-    }, [empleadosPorRegion]);
 
     const formatoMoneda = (valor) =>
         Number(valor || 0).toLocaleString('es-EC', {
@@ -117,7 +180,6 @@ export default function FacturaDistribuida() {
             return;
         }
 
-        // 1. Cálculo de centros normales
         const distribucionFinal = calcularDistribucionCentrosCosto({
             empleadosNormales: empleadosParaCentrosNormales,
             valorBase: valorBaseCalculado,
@@ -125,19 +187,23 @@ export default function FacturaDistribuida() {
 
         setResultadosCalculo(distribucionFinal);
 
-        // 2. Cálculo de distribución de Supervisores
-        const distribucionSup = calcularDistribucionSupervisores({
-            empleados: empleadosPorRegion,
-            parqueaderosConTemplate: parqueaderos,
-            modoFiltro,
-            parqueaderosSeleccionados,
-            valorBase: valorBaseCalculado,
-        });
+        // 👈 2. Se pasan los grupos y relaciones al calculador de supervisores
+        const distribucionSup = incluirSupervisores
+            ? calcularDistribucionSupervisores({
+                  empleados: empleadosPorRegion,
+                  parqueaderosConTemplate: parqueaderos.filter((p) => normalizarCodigo(p.codigo) !== '0110191'),
+                  gruposSupervision: gruposSupervision || [],
+                  relacionEmpleadosGrupos: relacionEmpleadosGrupos || [],
+                  modoFiltro,
+                  parqueaderosSeleccionados: parqueaderosNormalesSeleccionados,
+                  valorBase: valorBaseCalculado,
+              })
+            : { resultados: [], totalSupervisores: 0, montoSupervisores: 0 };
 
         setResultadosSupervisores(distribucionSup);
     };
 
-    // 3. Fusionar centros normales y supervisores en una sola lista unificada usando codCosto / código
+    // 4. Fusionar resultados unificados
     const resultadosUnificados = useMemo(() => {
         if (resultadosCalculo.length === 0 && resultadosSupervisores.resultados.length === 0) {
             return [];
@@ -155,14 +221,23 @@ export default function FacturaDistribuida() {
             mapaSupervisores.set(key, { monto: item.montoAsignado, nombre: item.nombre });
         });
 
-        const todasLasLlaves = new Set([...mapaNormales.keys(), ...mapaSupervisores.keys()]);
+        const todasLasLlaves = new Set();
+        if (modoFiltro === 'CUSTOM') {
+            parqueaderosNormalesSeleccionados.forEach((codigo) => todasLasLlaves.add(normalizarCodigo(codigo)));
+            mapaSupervisores.forEach((_, key) => todasLasLlaves.add(key));
+        } else {
+            mapaNormales.forEach((_, key) => todasLasLlaves.add(key));
+            mapaSupervisores.forEach((_, key) => todasLasLlaves.add(key));
+        }
+
         const unificados = [];
 
         todasLasLlaves.forEach((key) => {
             const normalItem = mapaNormales.get(key);
             const supItem = mapaSupervisores.get(key);
+            const infoParqueadero = parqueaderos.find((p) => normalizarCodigo(p.codigo) === key);
 
-            const centroCostoNombre = normalItem?.centroCosto || supItem?.nombre || key;
+            const centroCostoNombre = normalItem?.centroCosto || supItem?.nombre || infoParqueadero?.nombre || key;
             const cantidadEmpleados = normalItem?.cantidadEmpleados || 0;
             const valorBase = normalItem?.valorBase || valorBaseCalculado;
             const montoNormal = normalItem?.montoAsignado || 0;
@@ -181,7 +256,7 @@ export default function FacturaDistribuida() {
         });
 
         return unificados;
-    }, [resultadosCalculo, resultadosSupervisores, valorBaseCalculado]);
+    }, [resultadosCalculo, resultadosSupervisores, valorBaseCalculado, modoFiltro, parqueaderosNormalesSeleccionados, parqueaderos]);
 
     const granTotalDistribuido = resultadosUnificados.reduce(
         (total, item) => total + item.montoTotalAsignado,
@@ -196,7 +271,6 @@ export default function FacturaDistribuida() {
 
     return (
         <div className="factura-container">
-            {/* Columna Izquierda: Sidebar de controles y resumen */}
             <aside className="factura-sidebar">
                 <header className="factura-header">
                     <h1>
@@ -248,9 +322,16 @@ export default function FacturaDistribuida() {
                         <span>Calcular</span>
                     </button>
                 </section>
+
+                <section className="resumen-distribucion">
+                    {resultadosSupervisores.totalSupervisores > 0 && (
+                        <p style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#64748b' }}>
+                            Supervisores distribuidos: {resultadosSupervisores.totalSupervisores} (${formatoMoneda(resultadosSupervisores.montoSupervisores)})
+                        </p>
+                    )}
+                </section>
             </aside>
 
-            {/* Columna Derecha: Tabla Unificada de Resultados */}
             <main className="factura-content-resultados">
                 {resultadosUnificados.length > 0 && (
                     <section className="resultados-section">
@@ -281,7 +362,7 @@ export default function FacturaDistribuida() {
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colSpan="5">Gran Total Distribuido</th>
+                                    <th colSpan="5">Total Distribuido</th>
                                     <th>${formatoMoneda(granTotalDistribuido)}</th>
                                 </tr>
                             </tfoot>

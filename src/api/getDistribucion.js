@@ -1,6 +1,5 @@
 /**
- * Obtiene el listado de porcentajes de distribución base por parqueadero
- * @returns {Promise<Array<{name: string, cost_center_code: string, percentage: number}>>}
+ * Obtiene los grupos de supervisión y la relación de empleados desde la API
  */
 export async function getDistribucion() {
   try {
@@ -16,17 +15,32 @@ export async function getDistribucion() {
       throw new Error(errorData.message || `Error del servidor: ${response.status}`);
     }
 
-    const data = await response.json();
+    let data = await response.json();
+    console.log("🔍 RAW API DISTRIBUCION (Respuesta cruda):", data);
 
-    if (!Array.isArray(data)) return [];
+    // Si n8n devuelve un array (ej. [ { json: { gruposSupervision, ... } } ] o [ { gruposSupervision, ... } ])
+    if (Array.isArray(data) && data.length > 0) {
+      data = data[0];
+      if (data && data.json) {
+        data = data.json;
+      }
+    } else if (data && data.json) {
+      // Si viene como un solo objeto envuelto en .json
+      data = data.json;
+    }
 
-    return data.map((item) => ({
-      nombre: item.name,
-      codigo: item.cost_center_code,
-      porcentajeBase: parseFloat(item.percentage) || 0,
-    }));
+    // Extraer de forma segura
+    const gruposSupervision = Array.isArray(data?.gruposSupervision) ? data.gruposSupervision : [];
+    const relacionEmpleadosGrupos = Array.isArray(data?.relacionEmpleadosGrupos) ? data.relacionEmpleadosGrupos : [];
+
+    console.log("✅ Procesados - Grupos:", gruposSupervision.length, "| Relaciones:", relacionEmpleadosGrupos.length);
+
+    return {
+      gruposSupervision,
+      relacionEmpleadosGrupos,
+    };
   } catch (error) {
-    console.error('Error al consultar porcentajes de distribución:', error.message);
-    throw error;
+    console.error('❌ Error al consultar la distribución de supervisores:', error.message);
+    return { gruposSupervision: [], relacionEmpleadosGrupos: [] };
   }
 }

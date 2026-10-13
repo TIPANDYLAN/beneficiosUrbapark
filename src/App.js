@@ -45,17 +45,26 @@ const router = createBrowserRouter([
           const [
             empleadosData,
             parqueaderosData,
-            plantillaDistribucionData
+            distribucionData,
           ] = await Promise.all([
             obtenerEmpleados(),
             getParqueaderos(),
             getDistribucion(),
           ]);
 
+          const grupoBase = distribucionData.gruposSupervision?.[0]?.distribucion || [];
+          const plantillaDistribucionData = grupoBase.map((item) => ({
+            codigo: item.codigoParqueadero,
+            nombre: item.nombreParqueadero,
+            porcentajeBase: item.porcentaje,
+          }));
+
           return {
             empleadosData,
             parqueaderosData,
             plantillaDistribucionData,
+            gruposSupervision: distribucionData.gruposSupervision || [],
+            relacionEmpleadosGrupos: distribucionData.relacionEmpleadosGrupos || [],
           };
         },
       },
