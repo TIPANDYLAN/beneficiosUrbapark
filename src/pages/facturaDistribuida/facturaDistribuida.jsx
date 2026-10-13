@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 import { calcularDistribucionCentrosCosto } from '../../utils/distribucionCentrosCosto';
 import FiltroParqueaderos from '../../components/filtroParqueaderos/filtroParqueaderos';
 import { calcularDistribucionSupervisores } from '../../utils/calcularDistribucionSupervisores';
@@ -10,8 +11,8 @@ export default function FacturaDistribuida() {
         empleadosData,
         parqueaderosData,
         plantillaDistribucionData,
-        gruposSupervision,          // 👈 1. Recibido del loader
-        relacionEmpleadosGrupos,    // 👈 1. Recibido del loader
+        gruposSupervision,
+        relacionEmpleadosGrupos,
     } = useLoaderData();
 
     const [montoTotal, setMontoTotal] = useState('');
@@ -55,7 +56,6 @@ export default function FacturaDistribuida() {
             };
         });
 
-        // Asegurar que Administración-Supervisores esté disponible en la lista de opciones personalizadas
         const existeSupervisor = listaTemplate.some((p) => normalizarCodigo(p.codigo) === '0110191');
         if (!existeSupervisor) {
             listaTemplate.push({
@@ -69,14 +69,12 @@ export default function FacturaDistribuida() {
         return listaTemplate;
     }, [parqueaderosData, plantillaDistribucionData]);
 
-    // Parqueaderos normales seleccionados (excluyendo 0110191)
     const parqueaderosNormalesSeleccionados = useMemo(() => {
         return parqueaderosSeleccionados.filter(
             (c) => normalizarCodigo(c) !== '0110191'
         );
     }, [parqueaderosSeleccionados]);
 
-    // Bandera para saber si se deben incluir supervisores en modo CUSTOM según el check
     const incluirSupervisores = useMemo(() => {
         if (modoFiltro !== 'CUSTOM') return true;
         return parqueaderosSeleccionados.some(
@@ -84,74 +82,48 @@ export default function FacturaDistribuida() {
         );
     }, [modoFiltro, parqueaderosSeleccionados]);
 
-    // 1. Empleados normales
     const empleadosParaCentrosNormales = useMemo(() => {
         const noSupervisores = empleadosData.filter(
             (e) => String(e.codCosto ?? '').trim() !== '0110191'
         );
 
-        if (modoFiltro === 'TODOS') {
-            return noSupervisores;
-        }
-
-        if (modoFiltro === 'COSTA') {
-            return noSupervisores.filter(
-                (e) => normalizarTexto(e.ciudad) === 'GUAYAQUIL'
-            );
-        }
-
+        if (modoFiltro === 'TODOS') return noSupervisores;
+        if (modoFiltro === 'COSTA') return noSupervisores.filter((e) => normalizarTexto(e.ciudad) === 'GUAYAQUIL');
         if (modoFiltro === 'SIERRA') {
             return noSupervisores.filter((e) => {
                 const ciudad = normalizarTexto(e.ciudad);
                 return ciudad === 'QUITO' || ciudad === 'AMBATO';
             });
         }
-
         if (modoFiltro === 'CUSTOM') {
             const setSeleccionados = new Set(parqueaderosNormalesSeleccionados.map((c) => normalizarCodigo(c)));
-            return noSupervisores.filter((e) =>
-                setSeleccionados.has(normalizarCodigo(e.codCosto))
-            );
+            return noSupervisores.filter((e) => setSeleccionados.has(normalizarCodigo(e.codCosto)));
         }
-
         return noSupervisores;
     }, [empleadosData, modoFiltro, parqueaderosNormalesSeleccionados]);
 
     const empleadosSupervisoresConsiderados = useMemo(() => {
         if (!incluirSupervisores) return [];
-
         const soloSupervisores = empleadosData.filter(
             (e) => String(e.codCosto ?? '').trim() === '0110191'
         );
 
-        if (modoFiltro === 'TODOS') {
-            return soloSupervisores;
-        }
-
-        if (modoFiltro === 'COSTA') {
-            return soloSupervisores.filter(
-                (e) => normalizarTexto(e.ciudad) === 'GUAYAQUIL'
-            );
-        }
-
+        if (modoFiltro === 'TODOS') return soloSupervisores;
+        if (modoFiltro === 'COSTA') return soloSupervisores.filter((e) => normalizarTexto(e.ciudad) === 'GUAYAQUIL');
         if (modoFiltro === 'SIERRA') {
             return soloSupervisores.filter((e) => {
                 const ciudad = normalizarTexto(e.ciudad);
                 return ciudad === 'QUITO' || ciudad === 'AMBATO';
             });
         }
-
         if (modoFiltro === 'CUSTOM') {
             const regionesSeleccionadas = new Set(
                 parqueaderos
                     .filter((p) => parqueaderosNormalesSeleccionados.includes(p.codigo))
                     .map((p) => normalizarTexto(p.region))
             );
-            return soloSupervisores.filter((e) =>
-                regionesSeleccionadas.has(normalizarTexto(e.ciudad))
-            );
+            return soloSupervisores.filter((e) => regionesSeleccionadas.has(normalizarTexto(e.ciudad)));
         }
-
         return soloSupervisores;
     }, [empleadosData, modoFiltro, incluirSupervisores, parqueaderosNormalesSeleccionados, parqueaderos]);
 
@@ -187,7 +159,6 @@ export default function FacturaDistribuida() {
 
         setResultadosCalculo(distribucionFinal);
 
-        // 👈 2. Se pasan los grupos y relaciones al calculador de supervisores
         const distribucionSup = incluirSupervisores
             ? calcularDistribucionSupervisores({
                   empleados: empleadosPorRegion,
@@ -203,7 +174,6 @@ export default function FacturaDistribuida() {
         setResultadosSupervisores(distribucionSup);
     };
 
-    // 4. Fusionar resultados unificados
     const resultadosUnificados = useMemo(() => {
         if (resultadosCalculo.length === 0 && resultadosSupervisores.resultados.length === 0) {
             return [];
@@ -262,6 +232,45 @@ export default function FacturaDistribuida() {
         (total, item) => total + item.montoTotalAsignado,
         0
     );
+
+    const handleExportarExcel = () => {
+        if (resultadosUnificados.length === 0) return;
+
+        const datosExcel = resultadosUnificados.map((item) => ({
+            "Código Centro Costo": item.codigoCosto,
+            "Centro de Costo": item.centroCosto,
+            "Cantidad Empleados": item.cantidadEmpleados,
+            "Valor Base ($)": item.valorBase,
+            "Monto Normal ($)": item.montoNormal,
+            "Monto Supervisores ($)": item.montoSupervisor,
+            "Monto Total Asignado ($)": item.montoTotalAsignado,
+        }));
+
+        datosExcel.push({
+            "Código Centro Costo": "",
+            "Centro de Costo": "TOTAL DISTRIBUIDO",
+            "Cantidad Empleados": "",
+            "Valor Base ($)": "",
+            "Monto Normal ($)": "",
+            "Monto Supervisores ($)": "",
+            "Monto Total Asignado ($)": granTotalDistribuido,
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(datosExcel);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Distribucion Factura");
+
+        const montoStr = montoTotal ? Number(montoTotal).toFixed(2) : '0.00';
+        const ahora = new Date();
+        const dia = String(ahora.getDate()).padStart(2, '0');
+        const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+        const anio = ahora.getFullYear();
+        const fechaFormateada = `${dia}${mes}${anio}`;
+
+        const nombreArchivo = `Factura_Distribuida_${montoStr}_${fechaFormateada}.xlsx`;
+
+        XLSX.writeFile(workbook, nombreArchivo);
+    };
 
     const estaDeshabilitado =
         !montoTotal ||
@@ -369,6 +378,32 @@ export default function FacturaDistribuida() {
                         </table>
                     </section>
                 )}
+                {resultadosUnificados.length > 0 && (
+                        <button
+                            type="button"
+                            className="btn-exportar"
+                            onClick={handleExportarExcel}
+                        >
+                            <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                width="18" 
+                                height="18" 
+                                viewBox="0 0 24 24" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                strokeWidth="2" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round"
+                            >
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="8" y1="13" x2="16" y2="13"></line>
+                                <line x1="8" y1="17" x2="16" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <span>Exportar a Excel</span>
+                        </button>
+                    )}
 
                 {montoTotal && montoNumerico > 0 && cantidadEmpleadosConsiderados === 0 && (
                     <p className="mensaje-sin-empleados">
