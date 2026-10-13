@@ -3,7 +3,6 @@ import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
-  defer,
 } from 'react-router-dom';
 
 import BannerLayout from './layouts/bannerLayout.jsx';

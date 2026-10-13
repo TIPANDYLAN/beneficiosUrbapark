@@ -3,6 +3,10 @@
     {
       "source": "/api/cupo",
       "destination": "/api/cupo"
+    },
+    {
+      "source": "/api/empleados/route",
+      "destination": "/api/empleados/route"
     }
   ],
   "headers": [

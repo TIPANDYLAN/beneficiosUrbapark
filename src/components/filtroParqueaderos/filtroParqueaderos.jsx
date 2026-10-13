@@ -12,12 +12,12 @@ export default function FiltroParqueaderos({
   const popoverRef = useRef(null);
   const [busqueda, setBusqueda] = useState('');
 
-  // Inicializar seleccionando todos los parqueaderos al cargar la lista
+  // Solución al warning: Se incluye codigosSeleccionados.length o se maneja de forma limpia
   useEffect(() => {
     if (parqueaderos.length > 0 && codigosSeleccionados.length === 0) {
       setCodigosSeleccionados(parqueaderos.map((p) => p.codigo));
     }
-  }, [parqueaderos]);
+  }, [parqueaderos, codigosSeleccionados.length]);
 
   const handleSeleccionarModo = (nuevoModo) => {
     setModo(nuevoModo);
@@ -33,7 +33,6 @@ export default function FiltroParqueaderos({
     }
   };
 
-  // Filtrar lista según el texto ingresado
   const parqueaderosFiltrados = parqueaderos.filter((p) =>
     p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
     (p.codigo && p.codigo.toLowerCase().includes(busqueda.toLowerCase()))
