@@ -41,7 +41,7 @@ export default async function handler(req, res) {
   try {
     const urls = [
       'https://sitecdesarrollo.172.10.219.15.sslip.io/webhook/parqueadero/todos',
-      'https://sitecdesarrollo.9hwbyc.easypanel.host/webhook/parqueadero/todos',
+      'https://sitecdesarrollo-n8n.9hwbyc.easypanel.host/webhook/parqueadero/todos',
     ];
 
     for (const url of urls) {
