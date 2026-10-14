@@ -13,13 +13,10 @@ import './bannerLayout.css';
 export default function BannerLayout() {
   const location = useLocation();
   const navigation = useNavigation();
-
   const rutasSinHeader = ['/'];
-
   const mostrarHeader = !rutasSinHeader.includes(location.pathname);
-
   const estaCargando = navigation.state === 'loading';
-console.log('RENDER BANNER', navigation.state);
+
   return (
     <div className="page-with-banner">
 
