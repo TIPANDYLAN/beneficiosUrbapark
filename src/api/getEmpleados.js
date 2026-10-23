@@ -1,41 +1,31 @@
-function mapEmpleado(raw) {
-  if (!raw) return {};
+// src/api/getEmpleados.js
 
+// Mapeo optimizado exclusivamente para el selector inicial (Lista Ligera)
+function mapEmpleadoLista(raw) {
+  if (!raw) return {};
   return {
-    codMfcia: raw.COD_MFCIA,
-    cedula: raw.DOCI_MFEMP || raw.documento || raw.identificacion || '',
-    nombre: raw.NOMBRES || raw.nombres || raw.full_name || 'Sin nombre',
-    apellido: raw.APELLIDOS || raw.apellidos || '',
-    cargo: raw.CAR_DESCRIPCION || raw.puesto || raw.position || 'Sin cargo',
-    correo: raw.MAIL_MFEMP || raw.correo || raw.email || '',
-    sueldo: raw.SLD_MFEDC || raw.sueldo || 0,
-    ubicacion: raw.MTFSUC_DESC || raw.ubicacion || '',
-    ciudad: raw.CIUD_MFEMP || raw.ciudad || '',
-    provincia: raw.DSC_MFPVC || raw.provincia || '',
-    celular: raw.TLFCL_MFEMP || raw.celular || raw.telefono || '',
-    direccion: raw.DIR_MFEMP || raw.direccion || '',
-    ingreso: raw.FECING_MFEDC || '',
-    centroCosto: raw.DSC_MFCC || '',
-    codCosto: raw.COD_MFCC || ''
+    cedula: raw.DOCI_MFEMP || raw.documento || raw.cedula || raw.dni || '',
+    nombreCompleto: raw.nombreCompleto || 'Sin nombre'
   };
 }
 
+// 1. Carga la lista de nombres instantáneamente al abrir la vista
 export async function obtenerEmpleados() {
   const response = await fetch('/api/empleados', {
     method: 'GET',
+    headers: {
+      // Si usas el header de seguridad, inclúyelo aquí (asegúrate de exponerlo si es necesario en cliente)
+      'x-app-secret': process.env.NEXT_PUBLIC_INTERNAL_APP_SECRET || '',
+    }
   });
 
   if (!response.ok) {
-    throw new Error(`La consulta falló con estado ${response.status}`);
+    throw new Error(`La consulta de nombres falló con estado ${response.status}`);
   }
 
   const data = await response.json();
+  const listaRaw = Array.isArray(data) ? data : (data?.empleados || []);
 
-  // Normaliza la estructura de la respuesta.
-  const listaRaw = Array.isArray(data)
-    ? data
-    : data?.empleados || data?.data || [];
-
-  // Mapeo directo ultra veloz (Ya viene filtrado por SQL)
-  return listaRaw.map(mapEmpleado);
+  // Retornamos el array mapeado solo con cédula y nombre
+  return listaRaw.map(mapEmpleadoLista);
 }
