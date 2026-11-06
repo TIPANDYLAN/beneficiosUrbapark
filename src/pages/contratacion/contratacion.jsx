@@ -139,8 +139,7 @@ export default function Contratacion() {
                       setEmpleadoSeleccionado(valor);
 
                       const empEncontrado = lista.find((emp) => {
-                        const nombreCompleto = `${emp.nombre || emp.nombres || ''} ${emp.apellido || emp.apellidos || ''
-                          }`.trim();
+                        const nombreCompleto = `${emp.nombreCompleto}`.trim();
                         return nombreCompleto.toLowerCase() === valor.trim().toLowerCase();
                       });
 
@@ -151,8 +150,7 @@ export default function Contratacion() {
                   />
                   <datalist id="empleados-list">
                     {lista.map((emp, index) => {
-                      const nombreCompleto = `${emp.nombre || emp.nombres || ''} ${emp.apellido || emp.apellidos || ''
-                        }`.trim() || 'Sin nombre';
+                      const nombreCompleto = `${emp.nombreCompleto}`.trim() || 'Sin nombre';
                       return <option key={emp.id || emp.cedula || index} value={nombreCompleto} />;
                     })}
                   </datalist>

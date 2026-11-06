@@ -1,12 +1,13 @@
 {
+  "regions": ["iad1"],
   "rewrites": [
     {
-      "source": "/api/cupo",
-      "destination": "/api/cupo"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "source": "/api/empleados/route",
-      "destination": "/api/empleados/route"
+      "source": "/((?!api/|static/|.*\\..*$).*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
