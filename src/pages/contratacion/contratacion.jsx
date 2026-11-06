@@ -122,7 +122,7 @@ export default function Contratacion() {
         >
           <Await
             resolve={empleadosData}
-            errorElement={<p className="error-text">❌ Error al cargar los empleados.</p>}
+            errorElement={<p className="error-text" role="alert">No se pudo cargar la lista de empleados de n8n. Recargue la página para intentar nuevamente.</p>}
           >
             {(empleados) => {
               const lista = Array.isArray(empleados) ? empleados : empleados?.empleados || [];
@@ -148,6 +148,7 @@ export default function Contratacion() {
                     placeholder="Escriba para buscar un empleado..."
                     disabled={generando}
                   />
+                  {lista.length === 0 && <p role="status">No hay empleados disponibles en la lista de n8n.</p>}
                   <datalist id="empleados-list">
                     {lista.map((emp, index) => {
                       const nombreCompleto = `${emp.nombreCompleto}`.trim() || 'Sin nombre';

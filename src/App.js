@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   createBrowserRouter,
+  defer,
   RouterProvider,
   Navigate,
 } from 'react-router-dom';
@@ -30,11 +31,7 @@ const router = createBrowserRouter([
       {
         path: 'contratacion',
         element: <Contratacion />,
-        loader: async () => {
-          return {
-            empleadosData: await obtenerEmpleados(),
-          };
-        },
+        loader: () => defer({ empleadosData: obtenerEmpleados() }),
       },
 
       {

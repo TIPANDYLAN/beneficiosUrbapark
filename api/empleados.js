@@ -1,72 +1,53 @@
-// api/empleados.js
+// La lista de contratación se consulta exclusivamente en n8n.
 export default async function handler(req, res) {
   const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://empleados-urbapark.vercel.app', 
+    'https://empleados-urbapark.vercel.app',
+    'https://beneficios-urbapark.vercel.app',
+    ...[process.env.VERCEL_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL]
+      .filter(Boolean).map(host => `https://${host}`),
   ];
-
-  const origin = req.headers.origin || req.headers.referer;
-  const isAllowed = allowedOrigins.some((allowed) => origin?.startsWith(allowed));
-
-  if (isAllowed) {
-    res.setHeader('Access-Control-Allow-Origin', origin.replace(/\/$/, ''));
-  }
-
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key, x-app-secret');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (!isAllowed) {
+  let origin;
+  try {
+    origin = new URL(req.headers.origin || req.headers.referer).origin;
+  } catch {
     return res.status(403).json({ message: 'Acceso denegado: Origen no autorizado.' });
   }
-
+  if (!allowedOrigins.includes(origin)) {
+    return res.status(403).json({ message: 'Acceso denegado: Origen no autorizado.' });
+  }
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Vary', 'Origin');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Cache-Control', 'no-store');
+  if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET, OPTIONS');
     return res.status(405).json({ message: 'Método no permitido' });
   }
-
-  const urls = [
-    'https://sitecdesarrollo.172.10.219.15.sslip.io/webhook/general/empleados/nombres',
-    'https://sitecdesarrollo-n8n.9hwbyc.easypanel.host/webhook/general/empleados/nombres',
-  ];
-
-  try {
-    let empleadosData = null;
-
-    for (const url of urls) {
-      try {
-        console.log(`[GET] Consultando nombres en: ${url}`);
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'x-api-key': process.env.N8N_API_KEY,
-          },
-        });
-
-        const text = await response.text();
-        if (response.ok) {
-          const data = text ? JSON.parse(text) : null;
-          if (data) {
-            empleadosData = Array.isArray(data) ? data : (data.empleados || []);
-            break;
-          }
-        }
-      } catch (error) {
-        console.error(`-> Error de red en [${url}]:`, error.message);
-      }
-    }
-
-    if (!empleadosData) {
-      return res.status(502).json({ message: 'No se pudo consultar el servicio de nombres.' });
-    }
-
-    return res.status(200).json(empleadosData);
-
-  } catch (error) {
-    console.error('Error general:', error);
-    return res.status(500).json({ message: 'Error interno en el servidor.' });
+  if (!process.env.N8N_API_KEY) {
+    return res.status(503).json({ message: 'La conexión con n8n no está configurada.' });
   }
+  const urls = [
+    'https://sitecdesarrollo-n8n.9hwbyc.easypanel.host/webhook/general/empleados/nombres',
+    'https://sitecapn-n8n.9hwbyc.easypanel.host/webhook/empleados/activos',
+  ];
+  for (const url of urls) {
+    try {
+      const response = await fetch(url, {
+        headers: { 'x-api-key': process.env.N8N_API_KEY },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!response.ok) continue;
+      const data = await response.json();
+      const rows = Array.isArray(data) ? data : data?.empleados ?? data?.data;
+      if (!Array.isArray(rows)) continue;
+      return res.status(200).json(rows);
+    } catch {
+      // Intentar el siguiente webhook sin registrar claves ni datos personales.
+    }
+  }
+  return res.status(502).json({ message: 'No se pudo consultar la lista de empleados de n8n. Intente nuevamente.' });
 }
