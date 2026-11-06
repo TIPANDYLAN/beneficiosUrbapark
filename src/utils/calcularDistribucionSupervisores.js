@@ -13,6 +13,12 @@ export const calcularDistribucionSupervisores = ({
     const normalizarTexto = (str) => String(str ?? '').trim().toUpperCase();
     const normalizarCodigo = (str) => String(str ?? '').trim();
 
+    console.log("=== DEBUG SUPERVISORES ===");
+    console.log("Total empleados recibidos:", empleados.length);
+    console.log("Grupos de supervision recibidos:", gruposSupervision.length);
+    console.log("Relaciones empleado-grupo recibidas:", relacionEmpleadosGrupos.length);
+
+    // 1. Filtrar empleados supervisores (codCosto === '0110191')
     const supervisoresFiltrados = empleados.filter((e) => {
         const esSupervisor = String(e.codCosto ?? '').trim() === '0110191';
         if (!esSupervisor) return false;
@@ -23,14 +29,18 @@ export const calcularDistribucionSupervisores = ({
         return true; 
     });
 
+    console.log("Supervisores filtrados para cálculo:", supervisoresFiltrados.length);
+
     const totalSupervisores = supervisoresFiltrados.length;
     const baseNum = Number(valorBase) || 0;
     const montoSupervisores = totalSupervisores * baseNum;
 
     if (montoSupervisores <= 0 || totalSupervisores === 0) {
+        console.log("Monto o total de supervisores es 0, saliendo.");
         return { resultados: [], totalSupervisores: 0, montoSupervisores: 0 };
     }
 
+    // 2. Mapeos robustos de cédulas y grupos
     const mapaCedulaGrupo = new Map();
     relacionEmpleadosGrupos.forEach((r) => {
         if (r.cedulaEmpleado && r.grupoId !== undefined) {
@@ -57,6 +67,7 @@ export const calcularDistribucionSupervisores = ({
 
     const mapaAcumuladoParqueaderos = new Map();
 
+    // 3. Procesar cada supervisor individualmente
     supervisoresFiltrados.forEach((sup, idx) => {
         const cedulaSup = normalizarCodigo(
             sup.document_number || 
@@ -71,6 +82,10 @@ export const calcularDistribucionSupervisores = ({
 
         const grupoIdStr = mapaCedulaGrupo.get(cedulaSup);
         const grupoInfo = mapaGrupos.get(grupoIdStr);
+
+        if (idx < 3) {
+            console.log(`Supervisor [${idx}] - Cédula: "${cedulaSup}" -> GrupoId: ${grupoIdStr} -> Halló Grupo:`, !!grupoInfo);
+        }
 
         let distribucionPlantilla = [];
 
@@ -118,6 +133,8 @@ export const calcularDistribucionSupervisores = ({
         }
     });
 
+    console.log("Mapa acumulado parqueaderos supervisores:", Array.from(mapaAcumuladoParqueaderos.entries()));
+
     let sumaMontosDistribuidos = 0;
     const resultadosPreliminares = [];
 
@@ -132,6 +149,8 @@ export const calcularDistribucionSupervisores = ({
             montoAsignado,
         });
     });
+
+    console.log("Resultados preliminares supervisores:", resultadosPreliminares);
 
     const diferenciaCentavos = Number((montoSupervisores - sumaMontosDistribuidos).toFixed(2));
     if (diferenciaCentavos !== 0 && resultadosPreliminares.length > 0) {
