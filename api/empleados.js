@@ -31,8 +31,8 @@ export default async function handler(req, res) {
     return res.status(503).json({ message: 'La conexión con n8n no está configurada.' });
   }
   const urls = [
-    'https://sitecdesarrollo-n8n.9hwbyc.easypanel.host/webhook/general/empleados/nombres',
-    'https://sitecapn-n8n.9hwbyc.easypanel.host/webhook/empleados/activos',
+      'https://n8n.172.10.219.15.sslip.io/webhook/empleados/activos',
+      'https://sitecapn-n8n.9hwbyc.easypanel.host/webhook/empleados/activos',
   ];
   for (const url of urls) {
     try {
